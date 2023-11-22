@@ -1,0 +1,95 @@
+
+F:/Project/SDK_SLM325Y_C946A252_20230616_E02_V01/gccout/ec618_0h00/ap/EC618/ap_EC618.elf:     file format elf32-littlearm
+
+Sections:
+Idx Name          Size      VMA       LMA       File off  Algn
+  0 .vector       00000080  00824000  00824000  00004000  2**2
+                  CONTENTS, ALLOC, LOAD, READONLY, DATA
+  1 .cache        00000034  00824080  00824080  00004080  2**7
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+  2 .load_bootcode 00000ed4  00000000  008240b4  00010000  2**2
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+  3 .load_ap_piram_asmb 00002524  00001000  00824f88  00011000  2**2
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+  4 .load_ap_firam_asmb 00000000  00003524  00003524  00210fc0  2**2
+                  CONTENTS
+  5 .load_ap_rwdata_asmb 00000000  00003524  00003524  00210fc0  2**2
+                  CONTENTS
+  6 .load_ps_rwdata_asmb 00003128  00003528  008274ac  00013528  2**3
+                  CONTENTS, ALLOC, LOAD, DATA
+  7 .load_ap_zidata_asmb 00000024  00006650  00006650  00016650  2**2
+                  ALLOC
+  8 .load_rrcmem  00001000  0000b000  0000b000  0000b000  2**0
+                  ALLOC
+  9 .load_flashmem 00004000  0000c000  0000c000  0000b000  2**0
+                  ALLOC
+ 10 .load_ap_piram_msmb 000001c0  00400000  0082a5d4  00020000  2**1
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+ 11 .load_ap_firam_msmb 0001d01c  004001c0  0082a794  000201c0  2**2
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+ 12 .load_apos    0000508c  0041d1e0  008477b0  0003d1e0  2**4
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+ 13 .load_dram_bsp 00000334  0042226c  0084c83c  0004226c  2**2
+                  CONTENTS, ALLOC, LOAD, DATA
+ 14 .load_dram_bsp_zi 00001614  004225a0  0084cb70  000425a0  2**4
+                  ALLOC
+ 15 .unload_slpmem 00000116  00423bb4  0084cb70  00043bb4  2**2
+                  ALLOC
+ 16 .load_dram_shared 00001a18  00423cd0  0084cb70  00043cd0  2**3
+                  CONTENTS, ALLOC, LOAD, DATA
+ 17 .load_dram_shared_zi 0002c220  004256e8  0084e588  000456e8  2**3
+                  ALLOC
+ 18 .load_up_buffer 00066e64  00499000  00499000  00009000  2**2
+                  ALLOC
+ 19 .text         001c2a28  0084e588  0084e588  0004e588  2**3
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+ 20 .init         00000004  00a10fb0  00a10fb0  00210fb0  2**2
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+ 21 .fini         00000004  00a10fb4  00a10fb4  00210fb4  2**2
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+ 22 .ARM.exidx    00000008  00a10fb8  00a10fb8  00210fb8  2**2
+                  CONTENTS, ALLOC, LOAD, READONLY, DATA
+ 23 .load_xp_sharedinfo 00000678  0053e000  0053e000  0000e000  2**2
+                  ALLOC
+ 24 .load_dbg_area 00000008  0053ef00  0053ef00  0000e000  2**2
+                  ALLOC
+ 25 .ARM.attributes 00000029  00000000  00000000  00210fc0  2**0
+                  CONTENTS, READONLY
+ 26 .comment      0000004d  00000000  00000000  00210fe9  2**0
+                  CONTENTS, READONLY
+ 27 .debug_frame  0002d4e8  00000000  00000000  00211038  2**2
+                  CONTENTS, READONLY, DEBUGGING, OCTETS
+ 28 .debug_info   002b1db7  00000000  00000000  0023e520  2**0
+                  CONTENTS, READONLY, DEBUGGING, OCTETS
+ 29 .debug_abbrev 0003a94c  00000000  00000000  004f02d7  2**0
+                  CONTENTS, READONLY, DEBUGGING, OCTETS
+ 30 .debug_loc    001575da  00000000  00000000  0052ac23  2**0
+                  CONTENTS, READONLY, DEBUGGING, OCTETS
+ 31 .debug_aranges 0000cb98  00000000  00000000  00682200  2**3
+                  CONTENTS, READONLY, DEBUGGING, OCTETS
+ 32 .debug_ranges 0000f720  00000000  00000000  0068ed98  2**0
+                  CONTENTS, READONLY, DEBUGGING, OCTETS
+ 33 .debug_macro  0014163b  00000000  00000000  0069e4b8  2**0
+                  CONTENTS, READONLY, DEBUGGING, OCTETS
+ 34 .debug_line   001a8e35  00000000  00000000  007dfaf3  2**0
+                  CONTENTS, READONLY, DEBUGGING, OCTETS
+ 35 .debug_str    0013a9c7  00000000  00000000  00988928  2**0
+                  CONTENTS, READONLY, DEBUGGING, OCTETS
+      text       data        bss      total filename
+   1999044      20220     630354    2649618 F:/Project/SDK_SLM325Y_C946A252_20230616_E02_V01/gccout/ec618_0h00/ap/EC618/ap_EC618.elf
+      text       data        bss      total filename
+      1448        141          0       1589 mg_openAT_customer.o (ex F:/Project/SDK_SLM325Y_C946A252_20230616_E02_V01/gccout/ec618_0h00/ap/EC618/lib/libopenAt.a)
+      1710        163          4       1877 mg_openAT_fs.o (ex F:/Project/SDK_SLM325Y_C946A252_20230616_E02_V01/gccout/ec618_0h00/ap/EC618/lib/libopenAt.a)
+       288          7         16        311 mg_openAT_engine.o (ex F:/Project/SDK_SLM325Y_C946A252_20230616_E02_V01/gccout/ec618_0h00/ap/EC618/lib/libopenAt.a)
+        84          8          0         92 mg_openAT_reply.o (ex F:/Project/SDK_SLM325Y_C946A252_20230616_E02_V01/gccout/ec618_0h00/ap/EC618/lib/libopenAt.a)
+        14        350          0        364 mg_openAT_cmd_table.o (ex F:/Project/SDK_SLM325Y_C946A252_20230616_E02_V01/gccout/ec618_0h00/ap/EC618/lib/libopenAt.a)
+        94          0          0         94 mg_openAT_param.o (ex F:/Project/SDK_SLM325Y_C946A252_20230616_E02_V01/gccout/ec618_0h00/ap/EC618/lib/libopenAt.a)
+       298         26          0        324 mg_openAT_base.o (ex F:/Project/SDK_SLM325Y_C946A252_20230616_E02_V01/gccout/ec618_0h00/ap/EC618/lib/libopenAt.a)
+       126        664          0        790 mg_openAT_cmd_table_gperf.o (ex F:/Project/SDK_SLM325Y_C946A252_20230616_E02_V01/gccout/ec618_0h00/ap/EC618/lib/libopenAt.a)
+      4062       1359         20       5441 (TOTALS)
+      text       data        bss      total filename
+      1244        154          4       1402 prec_init.o (ex F:/Project/SDK_SLM325Y_C946A252_20230616_E02_V01/gccout/ec618_0h00/ap/EC618/lib/libstartup.a)
+       114          0          4        118 syscalls.o (ex F:/Project/SDK_SLM325Y_C946A252_20230616_E02_V01/gccout/ec618_0h00/ap/EC618/lib/libstartup.a)
+       364          4          0        368 system_ec618.o (ex F:/Project/SDK_SLM325Y_C946A252_20230616_E02_V01/gccout/ec618_0h00/ap/EC618/lib/libstartup.a)
+       128        128          0        256 startup_ec618_gcc.o (ex F:/Project/SDK_SLM325Y_C946A252_20230616_E02_V01/gccout/ec618_0h00/ap/EC618/lib/libstartup.a)
+      1850        286          8       2144 (TOTALS)

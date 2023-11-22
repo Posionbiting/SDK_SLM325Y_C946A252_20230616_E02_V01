@@ -1,0 +1,75 @@
+(make V=0 -f  make/Makefile.prj all)
+bash.exe: warning: could not find /tmp, please create!
+make[1]: Entering directory '/cygdrive/f/Project/SDK_SLM325Y_C946A252_20230616_E02_V01'
+CUSTOM OBJ-Y   custom/bsp/src/bsp_custom.o   custom/bsp/src/app.o   custom/main.o   custom/app_zj/src/app_nvm.o   custom/app_zj/src/app_global.o   custom/app_zj/src/app_net.o   custom/app_zj/src/app_mqtt.o   custom/app_zj/src/app_util.o   custom/app_zj/src/app_gsnn.o   custom/app_zj/src/app_test.o   custom/app_zj/src/app_ota.o   custom/app_zj/src/app_main.o
+EXAMPLE OBJ-Y   custom/bsp/src/bsp_custom.o   custom/bsp/src/app.o   custom/main.o   custom/app_zj/src/app_nvm.o   custom/app_zj/src/app_global.o   custom/app_zj/src/app_net.o   custom/app_zj/src/app_mqtt.o   custom/app_zj/src/app_util.o   custom/app_zj/src/app_gsnn.o   custom/app_zj/src/app_test.o   custom/app_zj/src/app_ota.o   custom/app_zj/src/app_main.o 
+CC custom/bsp/src/bsp_custom.c
+CC custom/app_zj/src/app_nvm.c
+CC custom/bsp/src/app.c
+CC custom/main.c
+bash.exe: warning: could not find /tmp, please create!
+bash.exe: warning: could not find /tmp, please create!
+bash.exe: warning: could not find /tmp, please create!
+bash.exe: warning: could not find /tmp, please create!
+CC custom/app_zj/src/app_global.c
+bash.exe: warning: could not find /tmp, please create!
+CC custom/app_zj/src/app_net.c
+bash.exe: warning: could not find /tmp, please create!
+CC custom/app_zj/src/app_mqtt.c
+CC custom/app_zj/src/app_util.c
+bash.exe: warning: could not find /tmp, please create!
+bash.exe: warning: could not find /tmp, please create!
+CC custom/app_zj/src/app_gsnn.c
+CC custom/app_zj/src/app_test.c
+bash.exe: warning: could not find /tmp, please create!
+bash.exe: warning: could not find /tmp, please create!
+CC custom/app_zj/src/app_ota.c
+bash.exe: warning: could not find /tmp, please create!
+CC custom/app_zj/src/app_main.c
+CC openAT/mg_openAT_customer.c
+bash.exe: warning: could not find /tmp, please create!
+bash.exe: warning: could not find /tmp, please create!
+CC openAT/mg_openAT_fs.c
+CC openAT/mg_openAT_engine.c
+bash.exe: warning: could not find /tmp, please create!
+bash.exe: warning: could not find /tmp, please create!
+CC openAT/mg_openAT_reply.c
+bash.exe: warning: could not find /tmp, please create!
+CC openAT/mg_openAT_cmd_table.c
+bash.exe: warning: could not find /tmp, please create!
+CC openAT/mg_openAT_param.c
+bash.exe: warning: could not find /tmp, please create!
+CC openAT/mg_openAT_base.c
+bash.exe: warning: could not find /tmp, please create!
+bash.exe: warning: could not find /tmp, please create!
+CC device/target/board/ec618_0h00/ap/gcc/prec_init.c
+CC device/target/board/ec618_0h00/ap/gcc/syscalls.c
+bash.exe: warning: could not find /tmp, please create!
+bash.exe: warning: could not find /tmp, please create!
+CC device/target/board/ec618_0h00/ap/src/system_ec618.c
+bash.exe: warning: could not find /tmp, please create!
+ASM device/target/board/ec618_0h00/ap/gcc/startup_ec618_gcc.s
+bash.exe: warning: could not find /tmp, please create!
+bash.exe: warning: could not find /tmp, please create!
+bash.exe: warning: could not find /tmp, please create!
+AR /cygdrive/f/Project/SDK_SLM325Y_C946A252_20230616_E02_V01/gccout/ec618_0h00/ap/EC618/lib/libstartup.a
+bash.exe: warning: could not find /tmp, please create!
+CC /cygdrive/f/Project/SDK_SLM325Y_C946A252_20230616_E02_V01/gccout/ec618_0h00/ap/EC618/openAT/mg_openAT_cmd_table_gperf.c
+bash.exe: warning: could not find /tmp, please create!
+AR /cygdrive/f/Project/SDK_SLM325Y_C946A252_20230616_E02_V01/gccout/ec618_0h00/ap/EC618/lib/libopenAt.a
+bash.exe: warning: could not find /tmp, please create!
+LINK /cygdrive/f/Project/SDK_SLM325Y_C946A252_20230616_E02_V01/gccout/ec618_0h00/ap/EC618/ap_EC618.elf
+bash.exe: warning: could not find /tmp, please create!
+Memory region         Used Size  Region Size  %age Used
+       ASMB_AREA:         64 KB        64 KB    100.00%
+       MSMB_AREA:     1306376 B      1280 KB     99.67%
+      FLASH_AREA:     2019264 B      2560 KB     77.03%
+OBJCOPY /cygdrive/f/Project/SDK_SLM325Y_C946A252_20230616_E02_V01/gccout/ec618_0h00/ap/EC618/ap_EC618.bin
+bash.exe: warning: could not find /tmp, please create!
+bash.exe: warning: could not find /tmp, please create!
+bash.exe: warning: could not find /tmp, please create!
+bash.exe: warning: could not find /tmp, please create!
+   text	   data	    bss	    dec	    hex	filename
+1999180	  20084	 630354	2649618	 286e12	F:/Project/SDK_SLM325Y_C946A252_20230616_E02_V01/gccout/ec618_0h00/ap/EC618/ap_EC618.elf
+bash.exe: warning: could not find /tmp, please create!
+make[1]: Leaving directory '/cygdrive/f/Project/SDK_SLM325Y_C946A252_20230616_E02_V01'

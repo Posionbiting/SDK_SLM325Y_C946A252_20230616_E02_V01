@@ -1,0 +1,256 @@
+# default target
+all::
+
+include $(TOP)/make/Makefile.vars
+
+ifeq ($(TOOLCHAIN),GCC)
+BUILDDIR ?= $(TOP)/gccout/$(TARGET)/$(CORE)/$(PROJECT)
+endif
+
+ifeq ($(TOOLCHAIN),ARMCC)
+BUILDDIR ?= $(TOP)/out/$(TARGET)/$(CORE)/$(PROJECT)
+endif
+
+LIBDIR   ?= $(TOP)/prebuild
+
+#-------------------------------------------------------------------------------
+#		Rules
+#-------------------------------------------------------------------------------
+include $(TOP)/device/target/Makefile.inc
+
+ifeq ($(BUILD_USE_PREBUILD_LIB),n)
+ifeq ($(BUILD_FW),y)
+include $(TOP)/FIRMWARE/Makefile.inc
+include $(TOP)/PROTOCOL/SRC/psl1/Makefile.inc
+endif
+ifeq ($(BUILD_PS),y)
+include $(TOP)/PROTOCOL/SRC/ps/Makefile.inc
+include $(TOP)/PROTOCOL/SRC/tcpip/Makefile.inc
+include $(TOP)/PROTOCOL/SRC/psl1/Makefile.inc
+endif
+ifeq ($(BUILD_USE_USB_LIB),y)
+include $(LIBDIR)/PLAT/Makefile.inc
+endif
+else
+ifeq ($(BUILD_FW),y)
+include $(LIBDIR)/FW/Makefile.inc
+endif
+ifeq ($(BUILD_PS),y)
+include $(LIBDIR)/PS/Makefile.inc
+endif
+include $(LIBDIR)/PLAT/Makefile.inc
+endif
+
+vpath %.c $(TOP)
+vpath %.s $(TOP)
+vpath %.S $(TOP)
+
+OBJS := $(addprefix $(BUILDDIR)/, $(obj-y))
+LIBS := $(addprefix $(BUILDDIR)/lib/,$(lib-y))
+LIBS_USBCUST := $(addprefix $(BUILDDIR)/lib/,$(lib-usbcust-y))
+
+PPFILES += $(patsubst %.o, %.pp, $(OBJS))
+
+ifneq ($(MAKECMDGOALS), unilog)
+-include $(OBJS:.o=.d)
+endif
+-include $(OBJS:.o=.dd)
+
+.PHONY: all build clean size cleanall unilog cpp
+
+all:: build
+
+ifeq ($(TOOLCHAIN),GCC)
+
+ifeq ($(SDK),true)
+build: $(BUILDDIR)/$(BINNAME).elf \
+	$(BUILDDIR)/$(BINNAME).bin \
+	$(BUILDDIR)/$(BINNAME).size
+else
+build: $(BUILDDIR)/$(BINNAME).elf \
+	$(BUILDDIR)/$(BINNAME).symbols \
+	$(BUILDDIR)/$(BINNAME).bin \
+	$(BUILDDIR)/$(BINNAME).size
+endif
+
+endif
+
+ifeq ($(TOOLCHAIN),ARMCC)
+
+build: $(BUILDDIR)/$(BINNAME).axf
+
+endif
+
+$(BUILDDIR):
+	@mkdir -p $(BUILDDIR)
+
+$(LIBDIR):
+	@mkdir -p $(LIBDIR)
+
+ifeq ($(TOOLCHAIN),GCC)
+
+$(BUILDDIR)/%.sc: %.c
+	@mkdir -p $(dir $@)
+	@cp $< $@
+	@$(TOP)/tools/coan/coan-6.0.1-x86_64.exe source $(filter -D%, $(CFLAGS)) -E --replace --implicit -ge $@; [[ $$? -ne 4 ]] && [[ $$? -ne 8 ]]
+
+$(BUILDDIR)/%.pp: %.c
+	@mkdir -p $(dir $@)
+	$(Q)$(CC) $(CFLAGS) $(CFLAGS_CPU) $(CFLAGS_INC) $(CFLAGS_DEFS) -MM -MP $< -MT $(basename $@).pp -MF $(basename $@).dd
+	$(Q)$(CC) $(CFLAGS) $(CFLAGS_CPU) $(CFLAGS_INC) $(CFLAGS_DEFS) -E -P $< -o $@
+	$(Q)$(TOP)/tools/LogPrePass.exe -P $(TOP)/gccout/$(TARGET)/$(CORE)/$(PROJECT) $(PPFLAG) $@;[ $$? -eq 0 ]
+
+$(BUILDDIR)/%.o: %.c
+	@mkdir -p $(dir $@)
+	$(ECHO) CC $<
+	$(Q)$(CC) $(CFLAGS) $(CFLAGS_CPU) $(CFLAGS_INC) $(CFLAGS_DEFS) $(DEPFLAGS) -c $< -o $@
+
+#overwrite implicit rule
+%.o: %.c
+	@mkdir -p $(dir $@)
+	$(ECHO) CC $<
+	$(Q)$(CC) $(CFLAGS) $(CFLAGS_CPU) $(CFLAGS_INC) $(CFLAGS_DEFS) $(DEPFLAGS) -c $< -o $@
+
+$(BUILDDIR)/%.o: %.s
+	@mkdir -p $(dir $@)
+	$(ECHO) ASM $<
+	$(Q)$(CC) $(CFLAGS_ASM) $(CFLAGS_CPU) $(CFLAGS_INC) $(CFLAGS_DEFS) $(DEPFLAGS) -c $< -o $@
+
+$(BUILDDIR)/%.o: %.S
+	@mkdir -p $(dir $@)
+	$(ECHO) ASM $<
+	$(Q)$(CC) $(CFLAGS) $(CFLAGS_CPU) $(CFLAGS_INC) $(CFLAGS_DEFS) $(DEPFLAGS) -c $< -o $@
+
+$(BUILDDIR)/$(BINNAME).elf: $(OBJS) $(LIBS) $(LIBS_USBCUST) $(linker-script-y)
+	$(ECHO) LINK $@
+	$(Q)$(CC) $(LDFLAGS) $(CFLAGS_CPU) $(CFLAGS_DEFS) -T$(linker-script-y) -Wl,-Map,$(BUILDDIR)/$(BINNAME).map -o $@ $(OBJS) -Wl,--start-group -Wl,--whole-archive $(LIBS) $(PREBUILDLIBS) -Wl,--no-whole-archive -Wl,--end-group -Wl,--no-undefined -Wl,--no-print-map-discarded
+
+ifeq ($(SDK),true)
+$(BUILDDIR)/$(BINNAME).bin: $(BUILDDIR)/$(BINNAME).elf
+	$(ECHO) OBJCOPY $@
+	$(Q)$(OBJCOPY) -O binary $< $@
+	@$(SIZE) $(OBJECTS) $<
+
+$(BUILDDIR)/$(BINNAME).size: $(BUILDDIR)/$(BINNAME).elf
+	@$(OBJDUMP) -h $< > $@
+	@$(SIZE) -G $< >> $@
+	@$(foreach lib, $(LIBS), $(SIZE) $(lib) -t -G >> $@;)
+else
+$(BUILDDIR)/$(BINNAME).symbols: $(BUILDDIR)/$(BINNAME).elf
+	$(Q)$(NM) --size-sort --print-size -r $< >$@
+
+
+$(BUILDDIR)/$(BINNAME).bin: $(BUILDDIR)/$(BINNAME).elf
+	$(ECHO) OBJCOPY $@
+	$(Q)$(OBJCOPY) -O binary $< $@
+	@$(OBJDUMP) -d -h $< > $(BUILDDIR)/$(BINNAME).txt
+	@$(SIZE) $(OBJECTS) $<
+
+$(BUILDDIR)/$(BINNAME).size: $(BUILDDIR)/$(BINNAME).elf
+	@$(OBJDUMP) -h $< > $@
+	@$(SIZE) -G $< >> $@
+	@$(foreach lib, $(LIBS), $(SIZE) $(lib) -t -G >> $@;)
+endif
+
+clean:
+	@rm -rf $(BUILDDIR)
+
+cleanall:
+	@rm -rf $(TOP)/gccout/$(BOARD_NAME) $(TOP)/middleware/developed/debug/inc/debug_log_*p.h
+
+size: $(BUILDDIR)/$(BINNAME).elf
+	@$(SIZE) $(OBJECTS) $(BUILDDIR)/$(BINNAME).elf
+
+ifeq ($(CORE),cp)
+unilog: cpp
+	@$(TOP)/tools/LogPrePass.exe -l $(BUILDDIR)/ -h $(BUILDDIR)/debug_log_$(CORE).h  -d $(BUILDDIR)/comdb_$(CORE).txt; [ $$? -eq 0 ]
+else
+
+ifeq ($(SDK),true)
+unilog: cpp
+	@$(TOP)/tools/LogPrePass.exe -I $(TOP)/tools/comdblib.txt -l $(BUILDDIR)/ -h $(BUILDDIR)/debug_log_cust_lib.h  -d $(TOP)/tools/comdb_cust_lib.txt; [ $$? -eq 0 ]
+	@$(TOP)/tools/LogPrePass.exe -I $(TOP)/tools/comdblib.txt $(TOP)/tools/comdb_cust_lib.txt -L $(BUILDDIR)/ -h $(BUILDDIR)/debug_log_$(CORE).h  -d $(BUILDDIR)/comdb.txt -v $(BUILDDIR)/dbversion.h; [ $$? -eq 0 ]
+else
+unilog: cpp
+	@$(TOP)/tools/LogPrePass.exe -I $(TOP)/gccout/$(TARGET)/cp/cp_project/comdb_cp.txt -l $(BUILDDIR)/ -h $(BUILDDIR)/debug_log_$(CORE)_lib.h  -d $(BUILDDIR)/comdb_$(CORE)_lib.txt; [ $$? -eq 0 ]
+	@$(TOP)/tools/LogPrePass.exe -I $(BUILDDIR)/comdb_$(CORE)_lib.txt -L $(BUILDDIR)/ -h $(BUILDDIR)/debug_log_$(CORE).h  -d $(BUILDDIR)/comdb.txt -v $(BUILDDIR)/dbversion.h; [ $$? -eq 0 ]	
+endif
+
+endif
+
+
+endif
+
+ifeq ($(TOOLCHAIN),ARMCC)
+
+$(BUILDDIR)/%.pp:%.c
+	@mkdir -p $(dir $@)
+	$(Q)$(CC) $(CFLAGS) $(CFLAGS_CPU) $(CFLAGS_INC) $(CFLAGS_DEFS) -M --depend_target $(basename $@).pp $< --depend $(basename $@).dd
+	$(Q)$(CC) $(CFLAGS) $(CFLAGS_CPU) $(CFLAGS_INC) $(CFLAGS_DEFS) -EP $< -o $@
+	$(Q)$(TOP)/tools/LogPrePass.exe -P $(TOP)/out/$(TARGET)/$(CORE)/$(PROJECT) $(PPFLAG) $@;[ $$? -eq 0 ]
+
+$(BUILDDIR)/%.o %.d: %.c
+	@mkdir -p $(dir $@)
+	$(ECHO) CC $<
+	$(Q)$(CC) $(CFLAGS) $(CFLAGS_INC) $(CFLAGS_DEFS) $< --depend $(basename $@).d -o $@
+
+$(BUILDDIR)/%.o %.d : %.s
+	@mkdir -p $(dir $@)
+	$(ECHO) AS $<
+	$(Q)$(AS) $(ASMFLAGS) $(CFLAGS_INC) $(CFLAGS_DEFS)  $< --depend $(basename $@).d -o $@
+
+$(BUILDDIR)/$(BINNAME).axf: $(OBJS) $(LIBS) $(linker-script-y)
+	$(ECHO) LINK $@
+	$(ECHO) $(LIBS)
+	$(Q)$(LD) $(LDFLAGS) --entry=Reset_Handler --scatter $(linker-script-y) -o $@ $(OBJS) $(LIBS) $(PREBUILDLIBS) --list $(BUILDDIR)/$(BINNAME).map --symdefs=$(BUILDDIR)/$(BINNAME).symbols
+	$(Q)$(ELF) --bin --output $(BUILDDIR)/$(BINNAME).bin $(BUILDDIR)/$(BINNAME).axf
+	$(Q)$(ELF) $(ELFFLAGS) --output $(BUILDDIR)/$(BINNAME).hex $(BUILDDIR)/$(BINNAME).axf
+	$(Q)$(ELF) -c $(BUILDDIR)/$(BINNAME).axf -o $(BUILDDIR)/$(BINNAME).txt
+
+clean:
+	@rm -rf $(BUILDDIR)
+cleanall:
+	@rm -rf $(TOP)/out/* $(TOP)/middleware/developed/debug/inc/debug_log_*p.h
+
+ifeq ($(CORE),cp)
+unilog: cpp
+	@$(TOP)/tools/LogPrePass.exe -l $(BUILDDIR)/ -h $(BUILDDIR)/debug_log_$(CORE).h  -d $(BUILDDIR)/comdb_$(CORE).txt; [ $$? -eq 0 ]
+else
+
+ifeq ($(SDK),true)
+unilog: cpp
+	@$(TOP)/tools/LogPrePass.exe -I $(TOP)/tools/comdblib.txt -l $(BUILDDIR)/ -h $(BUILDDIR)/debug_log_cust_lib.h  -d $(TOP)/tools/comdb_cust_lib.txt; [ $$? -eq 0 ]
+	@$(TOP)/tools/LogPrePass.exe -I $(TOP)/tools/comdblib.txt $(TOP)/tools/comdb_cust_lib.txt -L $(BUILDDIR)/ -h $(BUILDDIR)/debug_log_$(CORE).h  -d $(BUILDDIR)/comdb.txt -v $(BUILDDIR)/dbversion.h; [ $$? -eq 0 ]
+else
+unilog: cpp
+	@$(TOP)/tools/LogPrePass.exe -I $(TOP)/out/$(TARGET)/cp/cp_project/comdb_cp.txt -l $(BUILDDIR)/ -h $(BUILDDIR)/debug_log_$(CORE)_lib.h  -d $(BUILDDIR)/comdb_$(CORE)_lib.txt; [ $$? -eq 0 ]
+	@$(TOP)/tools/LogPrePass.exe -I $(BUILDDIR)/comdb_$(CORE)_lib.txt -L $(BUILDDIR)/ -h $(BUILDDIR)/debug_log_$(CORE).h  -d $(BUILDDIR)/comdb.txt -v $(BUILDDIR)/dbversion.h; [ $$? -eq 0 ]	
+endif
+
+endif
+
+endif
+
+
+cpp: $(PPFILES) $(LIBPPFILES) $(LIBUSBPPFILES) $(CUSTLIBPPFILES)
+$(LIBPPFILES):
+$(LIBUSBPPFILES):
+$(CUSTLIBPPFILES):
+
+ifeq ($(CORE),ap)
+ifeq ($(BUILD_CUST),qcom)
+$(PPFILES):    PPFLAG=-C
+$(LIBPPFILES): PPFLAG=-C
+$(LIBUSBPPFILES): PPFLAG=-c
+$(CUSTLIBPPFILES): PPFLAG=-c
+else
+$(PPFILES):    PPFLAG=-C
+$(LIBPPFILES): PPFLAG=-c
+$(LIBUSBPPFILES): PPFLAG=-c
+$(CUSTLIBPPFILES): PPFLAG=-c
+endif
+else
+$(PPFILES):    PPFLAG=-c
+$(LIBPPFILES): PPFLAG=-c
+endif
+

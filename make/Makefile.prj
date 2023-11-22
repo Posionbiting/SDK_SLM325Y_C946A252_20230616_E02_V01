@@ -1,0 +1,65 @@
+#-------------------------------------------------------------------------------
+# Configure target , toolchain and binname
+#-------------------------------------------------------------------------------
+AVAILABLE_TARGETS       = ec618_0h00
+TOOLCHAIN               = GCC
+BINNAME                 = ap_$(PROJECT)
+BUILDDIR                ?= $(TOP)/gccout/$(TARGET)/$(CORE)/$(PROJECT)
+
+#-------------------------------------------------------------------------------
+# Configure project
+#-------------------------------------------------------------------------------
+C_APP_PROJECT=CUSTOMER_CODE
+#C_APP_PROJECT=EXAMPLE_SYS_OS
+
+#-------------------------------------------------------------------------------
+# Configure function
+#-------------------------------------------------------------------------------
+FEATURE_OPEN_AT_ENABLE=y
+#FEATURE_OPEN_AT_ENABLE=n
+
+#-------------------------------------------------------------------------------
+# Configure include
+#-------------------------------------------------------------------------------
+CFLAGS_INC        += -I $(TOP)/include/common \
+                     -I $(TOP)/include/sys \
+                     -I $(TOP)/include/apps \
+                     -I $(TOP)/include/driver \
+                     -I $(TOP)/include/net \
+                     -I $(TOP)/include/fota \
+                     -I $(TOP)/include/pm
+
+#-------------------------------------------------------------------------------
+# Configure custom
+#-------------------------------------------------------------------------------
+include $(TOP)/custom/Makefile.inc
+CFLAGS_INC        += $(addprefix -I,$(CUS_INC))
+CUS_SRCS_O        := $(patsubst %.c, %.o, $(CUS_SRCS))
+obj-y             += $(subst $(TOP)/custom, custom,$(CUS_SRCS_O))
+$(info  CUSTOM OBJ-Y $(obj-y))
+
+#-------------------------------------------------------------------------------
+# Configure example
+#-------------------------------------------------------------------------------
+include $(TOP)/example/Makefile.inc
+CFLAGS_INC        += $(addprefix -I,$(EX_INC))
+
+EX_SRCS_O         := $(patsubst %.c, %.o, $(EX_SRCS))
+obj-y             += $(subst $(TOP)/example, example,$(EX_SRCS_O))
+$(info  EXAMPLE OBJ-Y $(obj-y))
+
+#-------------------------------------------------------------------------------
+# Configure macro
+#-------------------------------------------------------------------------------
+CFLAGS += -Werror
+CFLAGS += -Wno-unused-function
+CFLAGS += -DWDT_FEATURE_ENABLE=1
+CFLAGS += -DFEATURE_UART_HELP_DUMP_ENABLE
+CFLAGS += -DFEATURE_DUMP_CHECK=1
+CFLAGS += -DFEATURE_OPENCPU_ENABLE
+#Disable UART1 AT function in opencpu
+#CFLAGS += -DCONFIG_UART_AT_SUPPORT
+include $(TOP)/make/Makefile.config
+
+include $(TOP)/openAT/Makefile.inc
+include $(TOP)/make/Makefile.rules

@@ -1,0 +1,95 @@
+
+../../../../../../../PLAT/gccout/ec618_0h00/ap/bootloader/ap_bootloader.elf:     file format elf32-littlearm
+
+Sections:
+Idx Name          Size      VMA       LMA       File off  Algn
+  0 .vector       0000007c  00804000  00804000  00004000  2**2
+                  CONTENTS, ALLOC, LOAD, READONLY, DATA
+  1 .ap_iram_xip_start 00000038  00101000  0080407c  00011000  2**1
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+  2 .load_iram_pre1 00000034  00002000  008040b4  00012000  2**1
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+  3 .load_iram_pre2 00000d8c  00003000  008040e8  00013000  2**1
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+  4 .load_iram_usb 00005dd0  00400000  00804e74  00020000  2**2
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+  5 .load_dram_usb_data 0000047c  00408000  0080ac44  00028000  2**2
+                  CONTENTS, ALLOC, LOAD, DATA
+  6 .load_dram_usb_zi 000015d8  0040847c  0080b0c0  0003847c  2**2
+                  ALLOC
+  7 .load_iram    0000083c  00004000  0080b0c0  00034000  2**1
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+  8 .load_dram_shared_data 00001424  00007000  0080b8fc  00037000  2**2
+                  CONTENTS, ALLOC, LOAD, DATA
+  9 .load_dram_shared_zi 00002ba0  00008430  0080cd20  00038430  2**4
+                  ALLOC
+ 10 .unload_flashcode 0000fcd8  0080cd20  0080cd20  0003cd20  2**2
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+ 11 .init         00000004  0081c9f8  0081c9f8  0004c9f8  2**2
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+ 12 .fini         00000004  0081c9fc  0081c9fc  0004c9fc  2**2
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+ 13 .platFMRamcode 000000de  0081ca00  0081ca00  0004ca00  2**1
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+ 14 .USB_NOINIT_DATA_BUF 00000544  0000afd0  0081cade  0005afd0  2**2
+                  CONTENTS, ALLOC, LOAD, DATA
+ 15 .ARM.attributes 00000029  00000000  00000000  0005b514  2**0
+                  CONTENTS, READONLY
+ 16 .comment      0000004d  00000000  00000000  0005b53d  2**0
+                  CONTENTS, READONLY
+ 17 .debug_frame  00002f14  00000000  00000000  0005b58c  2**2
+                  CONTENTS, READONLY, DEBUGGING, OCTETS
+ 18 .debug_info   000198e0  00000000  00000000  0005e4a0  2**0
+                  CONTENTS, READONLY, DEBUGGING, OCTETS
+ 19 .debug_abbrev 000046ad  00000000  00000000  00077d80  2**0
+                  CONTENTS, READONLY, DEBUGGING, OCTETS
+ 20 .debug_loc    0000ed01  00000000  00000000  0007c42d  2**0
+                  CONTENTS, READONLY, DEBUGGING, OCTETS
+ 21 .debug_aranges 00000aa8  00000000  00000000  0008b130  2**3
+                  CONTENTS, READONLY, DEBUGGING, OCTETS
+ 22 .debug_ranges 000013e8  00000000  00000000  0008bbd8  2**0
+                  CONTENTS, READONLY, DEBUGGING, OCTETS
+ 23 .debug_macro  000198c6  00000000  00000000  0008cfc0  2**0
+                  CONTENTS, READONLY, DEBUGGING, OCTETS
+ 24 .debug_line   00015729  00000000  00000000  000a6886  2**0
+                  CONTENTS, READONLY, DEBUGGING, OCTETS
+ 25 .debug_str    00035e51  00000000  00000000  000bbfaf  2**0
+                  CONTENTS, READONLY, DEBUGGING, OCTETS
+      text       data        bss      total filename
+     94658       7776      16760     119194 ../../../../../../../PLAT/gccout/ec618_0h00/ap/bootloader/ap_bootloader.elf
+      text       data        bss      total filename
+       582          0          0        582 prec_init.o (ex ../../../../../../../PLAT/gccout/ec618_0h00/ap/bootloader/lib/libstartup.a)
+       114          0          4        118 syscalls.o (ex ../../../../../../../PLAT/gccout/ec618_0h00/ap/bootloader/lib/libstartup.a)
+       360          4          4        368 system_ec618.o (ex ../../../../../../../PLAT/gccout/ec618_0h00/ap/bootloader/lib/libstartup.a)
+        56        124          0        180 startup_ec618_gcc.o (ex ../../../../../../../PLAT/gccout/ec618_0h00/ap/bootloader/lib/libstartup.a)
+      1112        128          8       1248 (TOTALS)
+      text       data        bss      total filename
+      1476        424         55       1955 plat_config.o (ex ../../../../../../../PLAT/gccout/ec618_0h00/ap/bootloader/lib/libdriver.a)
+       248        238          0        486 es8388.o (ex ../../../../../../../PLAT/gccout/ec618_0h00/ap/bootloader/lib/libdriver.a)
+       178        120          0        298 nau88c22.o (ex ../../../../../../../PLAT/gccout/ec618_0h00/ap/bootloader/lib/libdriver.a)
+       390        196          0        586 es8311.o (ex ../../../../../../../PLAT/gccout/ec618_0h00/ap/bootloader/lib/libdriver.a)
+       294         23          0        317 codecDrv.o (ex ../../../../../../../PLAT/gccout/ec618_0h00/ap/bootloader/lib/libdriver.a)
+        66        260          0        326 ntc.o (ex ../../../../../../../PLAT/gccout/ec618_0h00/ap/bootloader/lib/libdriver.a)
+       618        644          2       1264 drv_odm_gpio.o (ex ../../../../../../../PLAT/gccout/ec618_0h00/ap/bootloader/lib/libdriver.a)
+         0          0          0          0 hal_pwrkey.o (ex ../../../../../../../PLAT/gccout/ec618_0h00/ap/bootloader/lib/libdriver.a)
+        82          0          0         82 hal_misc.o (ex ../../../../../../../PLAT/gccout/ec618_0h00/ap/bootloader/lib/libdriver.a)
+       138          0          0        138 ec_string.o (ex ../../../../../../../PLAT/gccout/ec618_0h00/ap/bootloader/lib/libdriver.a)
+       896          0          0        896 hal_i2s.o (ex ../../../../../../../PLAT/gccout/ec618_0h00/ap/bootloader/lib/libdriver.a)
+      3386        359        120       3865 bsp_usart.o (ex ../../../../../../../PLAT/gccout/ec618_0h00/ap/bootloader/lib/libdriver.a)
+       336         84          4        424 gpio.o (ex ../../../../../../../PLAT/gccout/ec618_0h00/ap/bootloader/lib/libdriver.a)
+       450        176          0        626 pad.o (ex ../../../../../../../PLAT/gccout/ec618_0h00/ap/bootloader/lib/libdriver.a)
+      1260        294        600       2154 i2s.o (ex ../../../../../../../PLAT/gccout/ec618_0h00/ap/bootloader/lib/libdriver.a)
+       366         94          0        460 wdt.o (ex ../../../../../../../PLAT/gccout/ec618_0h00/ap/bootloader/lib/libdriver.a)
+       894          0         11        905 oneWire.o (ex ../../../../../../../PLAT/gccout/ec618_0h00/ap/bootloader/lib/libdriver.a)
+       704        543          0       1247 clock.o (ex ../../../../../../../PLAT/gccout/ec618_0h00/ap/bootloader/lib/libdriver.a)
+       110        100          4        214 usbd_proc_cb_custom.o (ex ../../../../../../../PLAT/gccout/ec618_0h00/ap/bootloader/lib/libdriver.a)
+       592        175          0        767 usbd_multi_usrcfg_custom.o (ex ../../../../../../../PLAT/gccout/ec618_0h00/ap/bootloader/lib/libdriver.a)
+       508        262          0        770 usb_bl_api.o (ex ../../../../../../../PLAT/gccout/ec618_0h00/ap/bootloader/lib/libdriver.a)
+      1228        351       6180       7759 usb_bl_test.o (ex ../../../../../../../PLAT/gccout/ec618_0h00/ap/bootloader/lib/libdriver.a)
+       604        110          0        714 rndis_protocol.o (ex ../../../../../../../PLAT/gccout/ec618_0h00/ap/bootloader/lib/libdriver.a)
+       716        324          0       1040 function_vcom_inherent.o (ex ../../../../../../../PLAT/gccout/ec618_0h00/ap/bootloader/lib/libdriver.a)
+       540         23          0        563 function_vcom_custp1.o (ex ../../../../../../../PLAT/gccout/ec618_0h00/ap/bootloader/lib/libdriver.a)
+       586         49          0        635 function_vcom_custp2.o (ex ../../../../../../../PLAT/gccout/ec618_0h00/ap/bootloader/lib/libdriver.a)
+       236          0          0        236 memcpy-armv7m.o (ex ../../../../../../../PLAT/gccout/ec618_0h00/ap/bootloader/lib/libdriver.a)
+     16902       4849       6976      28727 (TOTALS)
+         0          0          0          0 (TOTALS)

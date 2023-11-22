@@ -1,0 +1,27 @@
+{
+    "files.associations": {
+        "mg_gnss.h": "c",
+        "ratio": "c",
+        "random": "c",
+        "functional": "c",
+        "sstream": "c",
+        "regex": "c",
+        "any": "c",
+        "array": "c",
+        "charconv": "c",
+        "chrono": "c",
+        "compare": "c",
+        "istream": "c",
+        "memory_resource": "c",
+        "ostream": "c",
+        "ranges": "c",
+        "scoped_allocator": "c",
+        "tuple": "c",
+        "type_traits": "c",
+        "utility": "c",
+        "variant": "c",
+        "*.tcc": "c",
+        "optional": "c",
+        "system_error": "c"
+    }
+}

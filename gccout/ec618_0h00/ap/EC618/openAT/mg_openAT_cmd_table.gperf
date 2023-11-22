@@ -1,0 +1,18 @@
+%{
+#ifdef __inline
+#undef __inline
+#endif
+#define __inline
+%}
+%includes
+struct AtCmdPreDefInfoMap {char* pName; unsigned short index;};
+%%
+"+USGSW",0
+"+USN",1
+"+UKEY",2
+"+UTYPE",3
+"+USECRET",4
+"+USETUPLOAD",5
+"+UWORKSTATE",6
+"+UALARM",7
+%%

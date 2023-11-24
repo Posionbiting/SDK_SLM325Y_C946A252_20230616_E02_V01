@@ -70,6 +70,7 @@ typedef struct APP_GNSS_DATA_T
     char lon[20];         //纬度
     char elv[10];         //海拔
     char speed[10];       //速度，kilometers/hour
+    char mode[10];
 } app_gnss_data_t;
 
 typedef struct

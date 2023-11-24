@@ -11405,7 +11405,7 @@ s32 MG_MQTT_Unsubscribe(ST_MqttClient* client, const char *topic, s32 timeout);
 s32 MG_MQTT_Publish(ST_MqttClient* client, const char *topic, const u8 *msg, u32 msgLen, u8 dup, u8 qos, u8 retain, s32 timeout);
 _Bool MG_MQTT_ClientIsConnected(ST_MqttClient* client);
 #define _GLOBAL__ extern
-#define APP_VER "0.1.1"
+#define APP_VER "0.1.3"
 typedef enum
 {
     APP_MQTT_DISCONNECTED = 0,
@@ -11454,6 +11454,7 @@ typedef struct APP_GNSS_DATA_T
     char lon[20];
     char elv[10];
     char speed[10];
+    char mode[10];
 } app_gnss_data_t;
 typedef struct
 {
@@ -11552,7 +11553,7 @@ CmsRetId openAT_USGSW(const AtCmdInputContext *pAtCmdReq)
     case AT_EXEC_REQ:
         iLen = 0;
         memset(mBuff, 0, sizeof(mBuff));
-        iLen += sprintf(mBuff+iLen, "APP Version: %s\r\n", "0.1.1");
+        iLen += sprintf(mBuff+iLen, "APP Version: %s\r\n", "0.1.3");
         memset(mVer, 0, sizeof(mVer));
         MG_SYSTEM_GetModuleInfo(mVer, sizeof(mVer));
         iLen += sprintf(mBuff+iLen, "SDK Version: %s", mVer);

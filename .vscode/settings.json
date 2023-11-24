@@ -26,6 +26,7 @@
         "app_include.h": "c",
         "atc_decoder.h": "c",
         "at_util.h": "c",
-        "mg_openat_param.h": "c"
+        "mg_openat_param.h": "c",
+        "stdlib.h": "c"
     }
 }

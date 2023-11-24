@@ -8633,7 +8633,7 @@ typedef enum
 void usbd_set_mod_last_err(uint16_t mod, uint16_t err_no);
 uint32_t usbd_get_mod_last_err(void);
 #define _DB_VERSION_H 
-#define DB_VERSION_UNIQ_ID "0x653e4b29"
+#define DB_VERSION_UNIQ_ID "0x5a68557d"
 #define _MEIG_NVM_CONFIG_H 
 typedef struct MG_NvmConfig_Tag
 {
@@ -8669,7 +8669,7 @@ void srvWakeupInit(void);
 _Bool srvWakeupOut(_Bool level);
 uint8_t* getDebugDVersion(void)
 {
-    return (uint8_t*)"0x653e4b29";
+    return (uint8_t*)"0x5a68557d";
 }
 void wakeup_in_process(unsigned char index)
 {

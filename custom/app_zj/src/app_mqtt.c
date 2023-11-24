@@ -143,7 +143,7 @@ static int app_mqtt_pub_uploadDevSN(app_cfg_t *ctx)
     app_util_jsonDataPack(false, &m_sendLen, ATTR_STRING, "gpsValid", (unsigned char *)"true");
     m_iBuff = ctx->nvConfig.sysState;
     app_util_jsonDataPack(false, &m_sendLen, ATTR_INT, "tamper", (unsigned char *)&m_iBuff);
-
+    app_util_jsonDataPack(false, &m_sendLen, ATTR_STRING, "modle", (unsigned char *)&ctx->gnssData.mode);
     m_sendLen += sprintf(g_app_tmpBuff+m_sendLen, "%s}", mEnd);
 
     {

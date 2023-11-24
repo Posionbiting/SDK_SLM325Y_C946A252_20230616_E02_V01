@@ -49,7 +49,7 @@ int app_gps_closeGpsANT(void)
 
 static char* app_gps_dms2d(double val)
 {
-    // original value: +/-[degree][min].[sec/60] 
+    // original value: +/-[degree][min].[sec/60]
     val = val /100;
     double int_part;
     double fra_part;
@@ -57,33 +57,127 @@ static char* app_gps_dms2d(double val)
     nval = malloc(20);
     memset(nval, 0, 20);    
     fra_part = modf(val, &int_part);
-    fra_part = (((fra_part * 100) / 60) + 0.0005) * 10000000;
+    fra_part = ((fra_part * 100) / 60);
     sprintf(nval,"%d.%d",(int)int_part,(int)fra_part);
     return nval;
 }
 
-static char* app_gps_float2str(double val)
+static char *dmTod(double num) {
+    
+    char *str;
+    str = malloc(20);
+    memset(str, 0, 20);
+    int precision = 7;
+    int intPart = (int) (num / 100); // 整数部分
+    double decimalPart = (((num / 100) - intPart) * 100) / 60; // 小数部分
+
+    // 将整数部分转换为字符串
+    int i = 0;
+    while (intPart > 0) {
+        str[i++] = (intPart % 10) + '0';
+        intPart /= 10;
+    }
+
+    // 反转整数部分字符串
+    int len = i;
+    for (int j = 0; j < len / 2; j++) {
+        char temp = str[j];
+        str[j] = str[len - j - 1];
+        str[len - j - 1] = temp;
+    }
+
+    // 如果有小数部分，则添加小数点和小数部分
+    if (precision > 0) {
+        str[i++] = '.';
+        decimalPart *= 10; // 将小数部分扩大10倍，以便取出每一位
+        for (int j = 0; j < precision; j++) {
+            int digit = (int) decimalPart;
+            str[i++] = digit + '0';
+            decimalPart -= digit;
+            decimalPart *= 10;
+        }
+    }
+
+    // 添加字符串结束标志
+    str[i] = '\0';
+
+    return str;
+}
+
+static char* app_gps_evl2str(double val)
 {
     double int_part;
     double fra_part;
     char *nstr;
     nstr = malloc(20);
+    memset(nstr, 0, 20);
     fra_part = modf(val, &int_part);
-    fra_part = (fra_part+0.0005) * 10000;
-    sprintf(nstr,"%d.%d",(int)int_part,(int)fra_part);
+    fra_part = (fra_part) * 10000;
+    sprintf(nstr,"%d.%d",(int)int_part,(int)(abs(fra_part)));
     return nstr;
 }
+
+static char* app_gps_speed2str(double val)
+{
+    char *convert_str;
+    convert_str = malloc(20);
+    memset(convert_str, 0, 20);
+    int precision = 7;
+    double int_part;
+    double fra_part;
+    fra_part = modf(val, &int_part);
+    int intPart = (int) (int_part); // 整数部分
+    double decimalPart = fra_part; // 小数部分
+
+    // 将整数部分转换为字符串
+    int i = 0;
+    while (intPart > 0) {
+        convert_str[i++] = (intPart % 10) + '0';
+        intPart /= 10;
+    }
+
+    // 反转整数部分字符串
+    int len = i;
+    for (int j = 0; j < len / 2; j++) {
+        char temp = convert_str[j];
+        convert_str[j] = convert_str[len - j - 1];
+        convert_str[len - j - 1] = temp;
+    }
+
+    // 如果有小数部分，则添加小数点和小数部分
+    if (precision > 0) {
+        convert_str[i++] = '.';
+        decimalPart *= 10; // 将小数部分扩大10倍，以便取出每一位
+        for (int j = 0; j < precision; j++) {
+            int digit = (int) decimalPart;
+            convert_str[i++] = digit + '0';
+            decimalPart -= digit;
+            decimalPart *= 10;
+        }
+    }
+
+    // 添加字符串结束标志
+    convert_str[i] = '\0';
+
+    return convert_str;
+}
+
 
 static int app_gps_getGnssData(int iTimeout, app_cfg_t *pApp)
 {
     int iRet = MG_RET_ERR;
     int i = iTimeout/(1000);
-
-    APP_DEBUG("[%d]GPS get gnss data", __LINE__);
+    APP_DEBUG("[%d]GPS get gnss data.", __LINE__);
 
     //开GPS天线
     iRet = app_gps_openGpsANT();
-
+    //Open the GNSS system.
+    if (!MG_GNSS_Open()){
+        APP_DEBUG("[%d]Filed to open the GNSS system.", __LINE__);
+    } else {
+        APP_DEBUG("[%d]Successfully opened the GNSS system.", __LINE__);
+    }
+    app_util_threadSleep(1000, pApp->bLowPowerModeEn);
     do
     {
         iRet = MG_RET_ERR;
@@ -92,13 +186,17 @@ static int app_gps_getGnssData(int iTimeout, app_cfg_t *pApp)
 
         if (MG_GNSS_GetStatus() != true)
         {
-            APP_DEBUG("[%d]GPS get gnss data", __LINE__);
+            APP_DEBUG("[%d]GNSS system is closed.", __LINE__);
             //MG_GNSS_DebugConfig(GNSS_DBG_USB_NMEA);
-            MG_GNSS_Open();
+            // if (!MG_GNSS_Open()){
+            //     APP_DEBUG("[%d]Filed to open the GNSS system.", __LINE__);
+            // } else {
+            //     APP_DEBUG("[%d]Successfully opened the GNSS system.", __LINE__);
+            // }
         }
         else
         {
-            APP_DEBUG("[%d]GPS get gnss data", __LINE__);
+            APP_DEBUG("[%d]GPS get gnss data.", __LINE__);
             memset(&nmeaINFO, 0, sizeof(nmeaINFO));
             memset(g_app_tmpBuff, 0, sizeof(g_app_tmpBuff));
 
@@ -113,15 +211,17 @@ static int app_gps_getGnssData(int iTimeout, app_cfg_t *pApp)
                 {
                     ST_Time m_time;
 
-                    APP_DEBUG("[%d]GPS get gnss data", __LINE__);
-                    APP_DEBUG("[%d]GPS get gnss data, lat:%d, lon:%d", __LINE__, (int)nmeaINFO.lat, (int)nmeaINFO.lon);
-                    APP_DEBUG("[%d]GPS get gnss data, lat:%s, lon:%s", __LINE__, app_gps_dms2d(nmeaINFO.lat), app_gps_dms2d(nmeaINFO.lon));
-                    sprintf(pApp->gnssData.lat,"%s", app_gps_dms2d(nmeaINFO.lat));
-                    sprintf(pApp->gnssData.lon,"%s", app_gps_dms2d(nmeaINFO.lon));
-                    sprintf(pApp->gnssData.elv,"%s", app_gps_float2str(nmeaINFO.elv));
+                    APP_DEBUG("[%d]GPS FIX STATUS:%d.", __LINE__, nmeaINFO.sig);
+                    APP_DEBUG("[%d]GPS get gnss data, lat:%d, lon:%d", __LINE__, (int)(nmeaINFO.lat*100000), (int)(nmeaINFO.lon*100000));
+                    APP_DEBUG("[%d]GPS get gnss data, lat:%s, lon:%s", __LINE__, dmTod(nmeaINFO.lat), dmTod(nmeaINFO.lon));
+                    sprintf(pApp->gnssData.lat,"%s", dmTod(nmeaINFO.lat));
+                    sprintf(pApp->gnssData.lon,"%s", dmTod(nmeaINFO.lon));
+                    APP_DEBUG("[%d]GPS get gnss data, altitude:%d", __LINE__, (int)(nmeaINFO.elv * 10000));
+                    sprintf(pApp->gnssData.elv,"%s", app_gps_evl2str(nmeaINFO.elv));
                     pApp->gnssData.view = nmeaINFO.satinfo.inview;
-                    sprintf(pApp->gnssData.speed,"%s", app_gps_float2str(nmeaINFO.speed));
-                    APP_DEBUG("[%d]GPS get gnss data, speed:%s", __LINE__, pApp->gnssData.speed);
+                    APP_DEBUG("[%d]GPS get gnss data, speed:%d", __LINE__, (int)(nmeaINFO.speed * 1000000));
+                    sprintf(pApp->gnssData.speed,"%s", app_gps_speed2str(nmeaINFO.speed));
+                    sprintf(pApp->gnssData.mode,"%s", "GPS");
                     // pApp->gnssData.lat = nmeaINFO.lat;
                     // pApp->gnssData.lon = nmeaINFO.lon;
                     // pApp->gnssData.elv = nmeaINFO.elv;
@@ -148,9 +248,13 @@ static int app_gps_getGnssData(int iTimeout, app_cfg_t *pApp)
         app_util_threadSleep(1000, pApp->bLowPowerModeEn);
     }while(--i > 0);
 
-    if (MG_GNSS_GetStatus() == true)
-        MG_GNSS_Close();
-
+    if (MG_GNSS_GetStatus() == true){
+        if (!MG_GNSS_Close()){
+            APP_DEBUG("[%d]Filed to cloess the GNSS system.", __LINE__);
+        } else {
+            APP_DEBUG("[%d]Successfully cloessed the GNSS system.", __LINE__);
+        }
+    }
     //关GPS天线
     app_gps_closeGpsANT();
 
@@ -323,7 +427,7 @@ static int _app_lbs_httpGet(app_cfg_t *pApp, const char *url, u32 timeout_s)
             pApp->gnssData.view = 0;
             sprintf(pApp->gnssData.speed,"%s", speed_null);
             // pApp->gnssData.speed = 0;
-             
+            sprintf(pApp->gnssData.mode,"%s", "LBS");
             //UTC: "2023-01-05 03:22:22"
             memset(&m_time, 0, sizeof(m_time));
             MG_TIME_GetLocalTime(&m_time);

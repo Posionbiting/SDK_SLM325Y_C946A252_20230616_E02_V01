@@ -2926,7 +2926,7 @@ s32 MG_MQTT_Unsubscribe(ST_MqttClient* client, const char *topic, s32 timeout);
 s32 MG_MQTT_Publish(ST_MqttClient* client, const char *topic, const u8 *msg, u32 msgLen, u8 dup, u8 qos, u8 retain, s32 timeout);
 _Bool MG_MQTT_ClientIsConnected(ST_MqttClient* client);
 #define _GLOBAL__ extern
-#define APP_VER "0.1.1"
+#define APP_VER "0.1.3"
 typedef enum
 {
     APP_MQTT_DISCONNECTED = 0,
@@ -2975,6 +2975,7 @@ typedef struct APP_GNSS_DATA_T
     char lon[20];
     char elv[10];
     char speed[10];
+    char mode[10];
 } app_gnss_data_t;
 typedef struct
 {
@@ -16211,6 +16212,7 @@ static int app_mqtt_pub_uploadDevSN(app_cfg_t *ctx)
     app_util_jsonDataPack(0, &m_sendLen, ATTR_STRING, "gpsValid", (unsigned char *)"true");
     m_iBuff = ctx->nvConfig.sysState;
     app_util_jsonDataPack(0, &m_sendLen, ATTR_INT, "tamper", (unsigned char *)&m_iBuff);
+    app_util_jsonDataPack(0, &m_sendLen, ATTR_STRING, "modle", (unsigned char *)&ctx->gnssData.mode);
     m_sendLen += sprintf(g_app_tmpBuff+m_sendLen, "%s}", mEnd);
     {
         iRet = MG_MQTT_Publish(ctx->mqtt.client, mTopic6,
@@ -16374,7 +16376,7 @@ static int app_pub_paramQF(app_cfg_t *ctx)
     app_util_jsonDataPack(0, &m_sendLen, ATTR_STRING, "hwVersion", (unsigned char *)"TTC411.0.0.1");
     app_util_jsonDataPack(0, &m_sendLen, ATTR_STRING, "IMEI", (unsigned char *)ctx->devInfo.imei);
     app_util_jsonDataPack(0, &m_sendLen, ATTR_STRING, "phone", (unsigned char *)iccid);
-    app_util_jsonDataPack(0, &m_sendLen, ATTR_STRING, "version", (unsigned char *)"0.1.1");
+    app_util_jsonDataPack(0, &m_sendLen, ATTR_STRING, "version", (unsigned char *)"0.1.3");
     app_util_jsonDataPack(0, &m_sendLen, ATTR_STRING, "time", (unsigned char *)ctx->gnssData.utc);
     MG_TRACE_Printf((u32)((u32)('U') | ((u32)('S') << 7) | ((u32)('E') << 14) | ((u32)('R') << 21)), "[%d]MQTT sub10: %s", 356, mTopic10);
     m_sendLen += sprintf(g_app_tmpBuff+m_sendLen, "%s}", mEnd);
@@ -16521,7 +16523,7 @@ static int app_pub_ParamOta(app_cfg_t *ctx)
     app_util_jsonDataPack(0, &m_sendLen, ATTR_STRING, "deviceSn", (unsigned char *)ctx->nvConfig.sn);
     app_util_jsonDataPack(0, &m_sendLen, ATTR_STRING, "confirm", (unsigned char *)"true");
     app_util_jsonDataPack(0, &m_sendLen, ATTR_STRING, "hwVersion", (unsigned char *)"TTC411.0.0.1");
-    app_util_jsonDataPack(0, &m_sendLen, ATTR_STRING, "version", (unsigned char *)"0.1.1");
+    app_util_jsonDataPack(0, &m_sendLen, ATTR_STRING, "version", (unsigned char *)"0.1.3");
     app_util_jsonDataPack(0, &m_sendLen, ATTR_STRING, "errorMessage", (unsigned char *)"");
     app_util_jsonDataPack(0, &m_sendLen, ATTR_STRING, "time", (unsigned char *)ctx->gnssData.utc);
     m_sendLen += sprintf(g_app_tmpBuff+m_sendLen, "%s}", mEnd);

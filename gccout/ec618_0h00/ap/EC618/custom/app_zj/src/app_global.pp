@@ -1511,7 +1511,7 @@ s32 MG_MQTT_Subscribe(ST_MqttClient* client, const char *topic, u8 qos, s32 time
 s32 MG_MQTT_Unsubscribe(ST_MqttClient* client, const char *topic, s32 timeout);
 s32 MG_MQTT_Publish(ST_MqttClient* client, const char *topic, const u8 *msg, u32 msgLen, u8 dup, u8 qos, u8 retain, s32 timeout);
 _Bool MG_MQTT_ClientIsConnected(ST_MqttClient* client);
-#define APP_VER "0.1.1"
+#define APP_VER "0.1.3"
 typedef enum
 {
     APP_MQTT_DISCONNECTED = 0,
@@ -1560,6 +1560,7 @@ typedef struct APP_GNSS_DATA_T
     char lon[20];
     char elv[10];
     char speed[10];
+    char mode[10];
 } app_gnss_data_t;
 typedef struct
 {

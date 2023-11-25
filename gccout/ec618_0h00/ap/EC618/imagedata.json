@@ -1,0 +1,36 @@
+{
+ "HashAlgorithm": "SHA256",
+ "imageinfo": [
+  {
+   "addr": 16384,
+   "file": "ap_bootloader.bin",
+   "flashsize": 131072,
+   "hash": "2E1F6B2037EE1051C6E5FC5871096DAE5CD2ECF3FE2404DBF13D4CCDF055E1EA",
+   "type": "BL"
+  },
+  {
+   "addr": 147456,
+   "file": "ap_EC618.bin",
+   "flashsize": 2621440,
+   "hash": "6F01625DA6347FDBE1783EA1AD3427879AEE99822DACEC8731AEB23A52A74B72",
+   "type": "AP"
+  },
+  {
+   "addr": 0,
+   "file": "cp-demo-flash.bin",
+   "flashsize": 524288,
+   "hash": "96162F91C5740FE955A5010FF17627AE3226D0CAA7D8CEF702C36B4D8EF3F589",
+   "type": "CP"
+  }
+ ],
+ "imagepath": "F:\\Project\\SDK_SLM325Y_C946A252_20230616_E02_V01\\gccout\\ec618_0h00\\ap\\EC618\\pkg_extract_tmp\\",
+ "ExtractSyncRec": {
+  "LastSyncTime": 1700905672,
+  "LastSyncStat": 1,
+  "PackagePath": "F:\\Project\\SDK_SLM325Y_C946A252_20230616_E02_V01\\gccout\\ec618_0h00\\ap\\EC618\\EC618.binpkg",
+  "PackageExtDir": "F:\\Project\\SDK_SLM325Y_C946A252_20230616_E02_V01\\gccout\\ec618_0h00\\ap\\EC618\\pkg_extract_tmp",
+  "PackageModTime": 1700905638,
+  "PackageSize": 2578154,
+  "PackageHash": "e46f069b5e57704afc55a659bc5c627458efdbd2ced5d70a4d46a56e000a94db"
+ }
+}

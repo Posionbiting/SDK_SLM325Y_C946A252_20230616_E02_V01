@@ -6,7 +6,7 @@
 #define _GLOBAL__ extern
 #endif
 
-#define APP_VER         "0.1.4"
+#define APP_VER         "0.0.4"
 typedef enum
 {
     APP_MQTT_DISCONNECTED = 0,

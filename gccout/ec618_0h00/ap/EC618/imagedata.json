@@ -12,7 +12,7 @@
    "addr": 147456,
    "file": "ap_EC618.bin",
    "flashsize": 2621440,
-   "hash": "6F01625DA6347FDBE1783EA1AD3427879AEE99822DACEC8731AEB23A52A74B72",
+   "hash": "882E7236B1736F410C74AEFF2D0B2C3736B6ACF20A8B6151142FC184A0E6D53A",
    "type": "AP"
   },
   {
@@ -25,12 +25,12 @@
  ],
  "imagepath": "F:\\Project\\SDK_SLM325Y_C946A252_20230616_E02_V01\\gccout\\ec618_0h00\\ap\\EC618\\pkg_extract_tmp\\",
  "ExtractSyncRec": {
-  "LastSyncTime": 1700905672,
+  "LastSyncTime": 1701158181,
   "LastSyncStat": 1,
   "PackagePath": "F:\\Project\\SDK_SLM325Y_C946A252_20230616_E02_V01\\gccout\\ec618_0h00\\ap\\EC618\\EC618.binpkg",
   "PackageExtDir": "F:\\Project\\SDK_SLM325Y_C946A252_20230616_E02_V01\\gccout\\ec618_0h00\\ap\\EC618\\pkg_extract_tmp",
-  "PackageModTime": 1700905638,
-  "PackageSize": 2578154,
-  "PackageHash": "e46f069b5e57704afc55a659bc5c627458efdbd2ced5d70a4d46a56e000a94db"
+  "PackageModTime": 1701158066,
+  "PackageSize": 2576130,
+  "PackageHash": "ad859f3fb1a7a8212235769674961e0ca3c371dc7bd524b52e472da1da91ff68"
  }
 }

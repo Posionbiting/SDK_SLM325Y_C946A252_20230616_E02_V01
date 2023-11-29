@@ -11,9 +11,9 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
   3 .load_ap_piram_asmb 00002524  00001000  00824f88  00011000  2**2
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
-  4 .load_ap_firam_asmb 00000000  00003524  00003524  00211308  2**2
+  4 .load_ap_firam_asmb 00000000  00003524  00003524  00210b20  2**2
                   CONTENTS
-  5 .load_ap_rwdata_asmb 00000000  00003524  00003524  00211308  2**2
+  5 .load_ap_rwdata_asmb 00000000  00003524  00003524  00210b20  2**2
                   CONTENTS
   6 .load_ps_rwdata_asmb 00003128  00003528  008274ac  00013528  2**3
                   CONTENTS, ALLOC, LOAD, DATA
@@ -37,46 +37,46 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   ALLOC
  16 .load_dram_shared 00001a18  00423cd0  0084cb70  00043cd0  2**3
                   CONTENTS, ALLOC, LOAD, DATA
- 17 .load_dram_shared_zi 0002c230  004256e8  0084e588  000456e8  2**3
+ 17 .load_dram_shared_zi 0002c0c8  004256e8  0084e588  000456e8  2**3
                   ALLOC
  18 .load_up_buffer 00066e64  00499000  00499000  00009000  2**2
                   ALLOC
- 19 .text         001c2d70  0084e588  0084e588  0004e588  2**3
+ 19 .text         001c2588  0084e588  0084e588  0004e588  2**3
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
- 20 .init         00000004  00a112f8  00a112f8  002112f8  2**2
+ 20 .init         00000004  00a10b10  00a10b10  00210b10  2**2
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
- 21 .fini         00000004  00a112fc  00a112fc  002112fc  2**2
+ 21 .fini         00000004  00a10b14  00a10b14  00210b14  2**2
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
- 22 .ARM.exidx    00000008  00a11300  00a11300  00211300  2**2
+ 22 .ARM.exidx    00000008  00a10b18  00a10b18  00210b18  2**2
                   CONTENTS, ALLOC, LOAD, READONLY, DATA
  23 .load_xp_sharedinfo 00000678  0053e000  0053e000  0000e000  2**2
                   ALLOC
  24 .load_dbg_area 00000008  0053ef00  0053ef00  0000e000  2**2
                   ALLOC
- 25 .ARM.attributes 00000029  00000000  00000000  00211308  2**0
+ 25 .ARM.attributes 00000029  00000000  00000000  00210b20  2**0
                   CONTENTS, READONLY
- 26 .comment      0000004d  00000000  00000000  00211331  2**0
+ 26 .comment      0000004d  00000000  00000000  00210b49  2**0
                   CONTENTS, READONLY
- 27 .debug_frame  0002d520  00000000  00000000  00211380  2**2
+ 27 .debug_frame  0002d46c  00000000  00000000  00210b98  2**2
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 28 .debug_info   002b2171  00000000  00000000  0023e8a0  2**0
+ 28 .debug_info   002b190a  00000000  00000000  0023e004  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 29 .debug_abbrev 0003a9ad  00000000  00000000  004f0a11  2**0
+ 29 .debug_abbrev 0003a8f2  00000000  00000000  004ef90e  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 30 .debug_loc    0015772e  00000000  00000000  0052b3be  2**0
+ 30 .debug_loc    001572a4  00000000  00000000  0052a200  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 31 .debug_aranges 0000cba0  00000000  00000000  00682af0  2**3
+ 31 .debug_aranges 0000cb80  00000000  00000000  006814a8  2**3
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 32 .debug_ranges 0000f7b8  00000000  00000000  0068f690  2**0
+ 32 .debug_ranges 0000f708  00000000  00000000  0068e028  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 33 .debug_macro  0014163b  00000000  00000000  0069ee48  2**0
+ 33 .debug_macro  0014163b  00000000  00000000  0069d730  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 34 .debug_line   001a9113  00000000  00000000  007e0483  2**0
+ 34 .debug_line   001a8cc1  00000000  00000000  007ded6b  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 35 .debug_str    0013aa0a  00000000  00000000  00989596  2**0
+ 35 .debug_str    0013a993  00000000  00000000  00987a2c  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
       text       data        bss      total filename
-   1999884      20220     630370    2650474 F:/Project/SDK_SLM325Y_C946A252_20230616_E02_V01/gccout/ec618_0h00/ap/EC618/ap_EC618.elf
+   1997860      20220     630010    2648090 F:/Project/SDK_SLM325Y_C946A252_20230616_E02_V01/gccout/ec618_0h00/ap/EC618/ap_EC618.elf
       text       data        bss      total filename
       1448        141          0       1589 mg_openAT_customer.o (ex F:/Project/SDK_SLM325Y_C946A252_20230616_E02_V01/gccout/ec618_0h00/ap/EC618/lib/libopenAt.a)
       1710        163          4       1877 mg_openAT_fs.o (ex F:/Project/SDK_SLM325Y_C946A252_20230616_E02_V01/gccout/ec618_0h00/ap/EC618/lib/libopenAt.a)

@@ -2926,7 +2926,7 @@ s32 MG_MQTT_Unsubscribe(ST_MqttClient* client, const char *topic, s32 timeout);
 s32 MG_MQTT_Publish(ST_MqttClient* client, const char *topic, const u8 *msg, u32 msgLen, u8 dup, u8 qos, u8 retain, s32 timeout);
 _Bool MG_MQTT_ClientIsConnected(ST_MqttClient* client);
 #define _GLOBAL__ extern
-#define APP_VER "0.0.4"
+#define APP_VER "0.0.6"
 typedef enum
 {
     APP_MQTT_DISCONNECTED = 0,
@@ -2982,8 +2982,8 @@ typedef struct
     u8 sn[20];
     u32 nReportCycle;
     app_sys_state sysState;
-    u8 key[20];
-    u8 secret[20];
+    u8 key[21];
+    u8 secret[21];
     u8 version[20];
     u8 type[20];
     u8 isSysUpdate;
@@ -16117,8 +16117,8 @@ extern enum __fdlibm_version __fdlib_version;
 #define APP_PUB_TOPIC_DEV_SN "tank/gpsMsg/"
 #define APP_PUB_TOPIC_ALARM "tank/gpsMsg/"
 #define APP_SUB_DOWN_PARAM "device/ota/"
-#define HW_VERSION "TTC411.0.0.1"
-#define DEVICE_TYPE "TTC411"
+#define HW_VERSION "TTC413.0.0.1"
+#define DEVICE_TYPE "TTC413"
 #define TOPIC_MAX_LEN 64
 #define CHAR_MAX_LEN 20
 #define remoteURL "47.89.13.131"
@@ -16212,7 +16212,6 @@ static int app_mqtt_pub_uploadDevSN(app_cfg_t *ctx)
     app_util_jsonDataPack(0, &m_sendLen, ATTR_STRING, "gpsValid", (unsigned char *)"true");
     m_iBuff = ctx->nvConfig.sysState;
     app_util_jsonDataPack(0, &m_sendLen, ATTR_INT, "tamper", (unsigned char *)&m_iBuff);
-    app_util_jsonDataPack(0, &m_sendLen, ATTR_STRING, "modle", (unsigned char *)&ctx->gnssData.mode);
     m_sendLen += sprintf(g_app_tmpBuff+m_sendLen, "%s}", mEnd);
     {
         iRet = MG_MQTT_Publish(ctx->mqtt.client, mTopic6,
@@ -16372,11 +16371,11 @@ static int app_pub_paramQF(app_cfg_t *ctx)
     m_sendLen += sprintf(g_app_tmpBuff+m_sendLen, "{");
     app_util_jsonDataPack(1, &m_sendLen, ATTR_STRING, "qfirmwareId", (unsigned char *)qfirmwareId);
     app_util_jsonDataPack(0, &m_sendLen, ATTR_STRING, "deviceSn", (unsigned char *)ctx->nvConfig.sn);
-    app_util_jsonDataPack(0, &m_sendLen, ATTR_STRING, "deviceType", (unsigned char *)"TTC411");
-    app_util_jsonDataPack(0, &m_sendLen, ATTR_STRING, "hwVersion", (unsigned char *)"TTC411.0.0.1");
+    app_util_jsonDataPack(0, &m_sendLen, ATTR_STRING, "deviceType", (unsigned char *)"TTC413");
+    app_util_jsonDataPack(0, &m_sendLen, ATTR_STRING, "hwVersion", (unsigned char *)"TTC413.0.0.1");
     app_util_jsonDataPack(0, &m_sendLen, ATTR_STRING, "IMEI", (unsigned char *)ctx->devInfo.imei);
     app_util_jsonDataPack(0, &m_sendLen, ATTR_STRING, "phone", (unsigned char *)iccid);
-    app_util_jsonDataPack(0, &m_sendLen, ATTR_STRING, "version", (unsigned char *)"0.0.4");
+    app_util_jsonDataPack(0, &m_sendLen, ATTR_STRING, "version", (unsigned char *)"0.0.6");
     app_util_jsonDataPack(0, &m_sendLen, ATTR_STRING, "time", (unsigned char *)ctx->gnssData.utc);
     MG_TRACE_Printf((u32)((u32)('U') | ((u32)('S') << 7) | ((u32)('E') << 14) | ((u32)('R') << 21)), "[%d]MQTT sub10: %s", 356, mTopic10);
     m_sendLen += sprintf(g_app_tmpBuff+m_sendLen, "%s}", mEnd);
@@ -16522,8 +16521,8 @@ static int app_pub_ParamOta(app_cfg_t *ctx)
     app_util_jsonDataPack(1, &m_sendLen, ATTR_STRING, "otaId", (unsigned char *)ctx->nvConfig.otaId);
     app_util_jsonDataPack(0, &m_sendLen, ATTR_STRING, "deviceSn", (unsigned char *)ctx->nvConfig.sn);
     app_util_jsonDataPack(0, &m_sendLen, ATTR_STRING, "confirm", (unsigned char *)"true");
-    app_util_jsonDataPack(0, &m_sendLen, ATTR_STRING, "hwVersion", (unsigned char *)"TTC411.0.0.1");
-    app_util_jsonDataPack(0, &m_sendLen, ATTR_STRING, "version", (unsigned char *)"0.0.4");
+    app_util_jsonDataPack(0, &m_sendLen, ATTR_STRING, "hwVersion", (unsigned char *)"TTC413.0.0.1");
+    app_util_jsonDataPack(0, &m_sendLen, ATTR_STRING, "version", (unsigned char *)"0.0.6");
     app_util_jsonDataPack(0, &m_sendLen, ATTR_STRING, "errorMessage", (unsigned char *)"");
     app_util_jsonDataPack(0, &m_sendLen, ATTR_STRING, "time", (unsigned char *)ctx->gnssData.utc);
     m_sendLen += sprintf(g_app_tmpBuff+m_sendLen, "%s}", mEnd);
@@ -16595,11 +16594,11 @@ int app_mqtt_connect(app_cfg_t *ctx)
 {
     int iRet = MG_RET_OK;
     u8 cid = ctx->netInfo.cid;
-    char name[20];
-    char password[20];
-    strcpy(name, (char *)ctx->nvConfig.key);
-    strcpy(password, (char *)ctx->nvConfig.secret);
-    MG_TRACE_Printf((u32)((u32)('U') | ((u32)('S') << 7) | ((u32)('E') << 14) | ((u32)('R') << 21)), "[%d]MQTT connect", 624);
+    char name[40] = {0};
+    char password[40] = {0};
+    sprintf(name, "%s", ctx->nvConfig.key);
+    sprintf(password, "%s", ctx->nvConfig.secret);
+    MG_TRACE_Printf((u32)((u32)('U') | ((u32)('S') << 7) | ((u32)('E') << 14) | ((u32)('R') << 21)), "[%d]MQTT connect", 626);
     MG_TRACE_Printf((u32)((u32)('U') | ((u32)('S') << 7) | ((u32)('E') << 14) | ((u32)('R') << 21)), "name:%s", name);
     MG_TRACE_Printf((u32)((u32)('U') | ((u32)('S') << 7) | ((u32)('E') << 14) | ((u32)('R') << 21)), "password:%s", password);
     if (ctx->mqtt.client == ((void *)0))
@@ -16611,7 +16610,7 @@ int app_mqtt_connect(app_cfg_t *ctx)
     if (MG_MQTT_GetClientState(ctx->mqtt.client) != MQTT_STATE_CONNECT
      && MG_MQTT_GetClientState(ctx->mqtt.client) != MQTT_STATE_DISCONNECTING)
     {
-        MG_TRACE_Printf((u32)((u32)('U') | ((u32)('S') << 7) | ((u32)('E') << 14) | ((u32)('R') << 21)), "[%d]MQTT connect, iRet:%d", 637, iRet);
+        MG_TRACE_Printf((u32)((u32)('U') | ((u32)('S') << 7) | ((u32)('E') << 14) | ((u32)('R') << 21)), "[%d]MQTT connect, iRet:%d", 639, iRet);
         {
             ctx->mqtt.connectCtx.client_id = (char *)ctx->nvConfig.sn;
             ctx->mqtt.connectCtx.hostname = "47.89.13.131";
@@ -16626,12 +16625,12 @@ int app_mqtt_connect(app_cfg_t *ctx)
         iRet = MG_MQTT_SetOpt(ctx->mqtt.client, MQTT_OPT_BIND_CID_SET, &cid, sizeof(cid));
         if (MG_RET_OK == iRet)
         {
-            MG_TRACE_Printf((u32)((u32)('U') | ((u32)('S') << 7) | ((u32)('E') << 14) | ((u32)('R') << 21)), "[%d]MQTT connect, iRet:%d", 654, iRet);
+            MG_TRACE_Printf((u32)((u32)('U') | ((u32)('S') << 7) | ((u32)('E') << 14) | ((u32)('R') << 21)), "[%d]MQTT connect, iRet:%d", 656, iRet);
             iRet = MG_MQTT_RegisterEx(ctx->mqtt.client, app_mqtt_incoming_cb, ((void *)0));
         }
         if (MG_RET_OK == iRet)
         {
-            MG_TRACE_Printf((u32)((u32)('U') | ((u32)('S') << 7) | ((u32)('E') << 14) | ((u32)('R') << 21)), "[%d]MQTT connect, iRet:%d", 660, iRet);
+            MG_TRACE_Printf((u32)((u32)('U') | ((u32)('S') << 7) | ((u32)('E') << 14) | ((u32)('R') << 21)), "[%d]MQTT connect, iRet:%d", 662, iRet);
             iRet = MG_MQTT_Connect(ctx->mqtt.client, &ctx->mqtt.connectCtx, ctx->mqtt.connectTimeout);
             if (MG_RET_OK == iRet)
             {
@@ -16641,7 +16640,7 @@ int app_mqtt_connect(app_cfg_t *ctx)
         ctx->mqtt.state = iRet != MG_RET_OK ? APP_MQTT_DISCONNECTED : APP_MQTT_CONNECTED;
         if(iRet != MG_RET_OK)
         {
-            MG_TRACE_Printf((u32)((u32)('U') | ((u32)('S') << 7) | ((u32)('E') << 14) | ((u32)('R') << 21)), "[%d]MQTT connect, iRet:%d", 671, iRet);
+            MG_TRACE_Printf((u32)((u32)('U') | ((u32)('S') << 7) | ((u32)('E') << 14) | ((u32)('R') << 21)), "[%d]MQTT connect, iRet:%d", 673, iRet);
             MG_MQTT_Disconnect(ctx->mqtt.client);
         }
     }
@@ -16663,13 +16662,13 @@ static void app_slp_beforeSleep(void *pdata, slpManLpState state)
     switch(state)
     {
         case SLPMAN_SLEEP1_STATE:
-            MG_TRACE_Printf((u32)((u32)('U') | ((u32)('S') << 7) | ((u32)('E') << 14) | ((u32)('R') << 21)), "[%d]slp_beforeSleep, state:%d", 699, state);
+            MG_TRACE_Printf((u32)((u32)('U') | ((u32)('S') << 7) | ((u32)('E') << 14) | ((u32)('R') << 21)), "[%d]slp_beforeSleep, state:%d", 701, state);
             break;
         case SLPMAN_SLEEP2_STATE:
-            MG_TRACE_Printf((u32)((u32)('U') | ((u32)('S') << 7) | ((u32)('E') << 14) | ((u32)('R') << 21)), "[%d]slp_beforeSleep, state:%d", 703, state);
+            MG_TRACE_Printf((u32)((u32)('U') | ((u32)('S') << 7) | ((u32)('E') << 14) | ((u32)('R') << 21)), "[%d]slp_beforeSleep, state:%d", 705, state);
             break;
         case SLPMAN_HIBERNATE_STATE:
-            MG_TRACE_Printf((u32)((u32)('U') | ((u32)('S') << 7) | ((u32)('E') << 14) | ((u32)('R') << 21)), "[%d]slp_beforeSleep, state:%d", 707, state);
+            MG_TRACE_Printf((u32)((u32)('U') | ((u32)('S') << 7) | ((u32)('E') << 14) | ((u32)('R') << 21)), "[%d]slp_beforeSleep, state:%d", 709, state);
             break;
         default:
             break;
@@ -16682,18 +16681,18 @@ static void app_mqtt_thread(void *param)
     app_cfg_t *pApp = &g_app_cfg;
     uint8_t slpmanSlp1Handler = 0xff;
     _Bool bFirst = 1;
-    sprintf(mTopic1, "devices/%s/%s/settings/set", "TTC411", g_app_cfg.nvConfig.sn);
-    sprintf(mTopic2, "devices/%s/%s/settings/query", "TTC411", g_app_cfg.nvConfig.sn);
-    sprintf(mTopic3, "devices/%s/%s/ota/set", "TTC411", g_app_cfg.nvConfig.sn);
-    sprintf(mTopic4, "devices/%s/all/ota/set", "TTC411");
-    sprintf(mTopic5, "devices/%s/%s/ota/query", "TTC411", g_app_cfg.nvConfig.sn);
-    sprintf(mTopica, "devices/%s/%s/battery/set", "TTC411", g_app_cfg.nvConfig.sn);
-    sprintf(mTopic6, "devices/%s/%s/Msg", "TTC411", g_app_cfg.nvConfig.sn);
-    sprintf(mTopic7, "devices/%s/%s/settings/confirm", "TTC411", g_app_cfg.nvConfig.sn);
-    sprintf(mTopic8, "devices/%s/%s/settings/response", "TTC411", g_app_cfg.nvConfig.sn);
-    sprintf(mTopic9, "devices/%s/%s/ota/confirm", "TTC411", g_app_cfg.nvConfig.sn);
-    sprintf(mTopic10,"devices/%s/%s/ota/response", "TTC411", g_app_cfg.nvConfig.sn);
-    sprintf(mTopicb, "devices/%s/%s/battery/confirm", "TTC411", g_app_cfg.nvConfig.sn);
+    sprintf(mTopic1, "devices/%s/%s/settings/set", "TTC413", g_app_cfg.nvConfig.sn);
+    sprintf(mTopic2, "devices/%s/%s/settings/query", "TTC413", g_app_cfg.nvConfig.sn);
+    sprintf(mTopic3, "devices/%s/%s/ota/set", "TTC413", g_app_cfg.nvConfig.sn);
+    sprintf(mTopic4, "devices/%s/all/ota/set", "TTC413");
+    sprintf(mTopic5, "devices/%s/%s/ota/query", "TTC413", g_app_cfg.nvConfig.sn);
+    sprintf(mTopica, "devices/%s/%s/battery/set", "TTC413", g_app_cfg.nvConfig.sn);
+    sprintf(mTopic6, "devices/%s/%s/Msg", "TTC413", g_app_cfg.nvConfig.sn);
+    sprintf(mTopic7, "devices/%s/%s/settings/confirm", "TTC413", g_app_cfg.nvConfig.sn);
+    sprintf(mTopic8, "devices/%s/%s/settings/response", "TTC413", g_app_cfg.nvConfig.sn);
+    sprintf(mTopic9, "devices/%s/%s/ota/confirm", "TTC413", g_app_cfg.nvConfig.sn);
+    sprintf(mTopic10,"devices/%s/%s/ota/response", "TTC413", g_app_cfg.nvConfig.sn);
+    sprintf(mTopicb, "devices/%s/%s/battery/confirm", "TTC413", g_app_cfg.nvConfig.sn);
     slpManSetPmuSleepMode(1, SLP_SLP1_STATE, 0);
     slpManApplyPlatVoteHandle("appslp1", &slpmanSlp1Handler);
     slpManRegisterUsrdefinedBackupCb(app_slp_beforeSleep, ((void *)0));
@@ -16708,8 +16707,8 @@ static void app_mqtt_thread(void *param)
             if (MG_RET_OK == iRet)
             {
                 g_app_cfg.nvConfig.batteryCount++;
-                MG_TRACE_Printf((u32)((u32)('U') | ((u32)('S') << 7) | ((u32)('E') << 14) | ((u32)('R') << 21)), "[%d]MQTT upload info", 762);
-                MG_TRACE_Printf((u32)((u32)('U') | ((u32)('S') << 7) | ((u32)('E') << 14) | ((u32)('R') << 21)), "[%d]MQTT g_app_cfg.nvConfig.isSysUpdate:%d", 763, g_app_cfg.nvConfig.isSysUpdate);
+                MG_TRACE_Printf((u32)((u32)('U') | ((u32)('S') << 7) | ((u32)('E') << 14) | ((u32)('R') << 21)), "[%d]MQTT upload info", 764);
+                MG_TRACE_Printf((u32)((u32)('U') | ((u32)('S') << 7) | ((u32)('E') << 14) | ((u32)('R') << 21)), "[%d]MQTT g_app_cfg.nvConfig.isSysUpdate:%d", 765, g_app_cfg.nvConfig.isSysUpdate);
                 if(g_app_cfg.nvConfig.isSysUpdate != 0){
                     app_pub_ParamOta(pApp);
                     g_app_cfg.nvConfig.isSysUpdate = 0;
@@ -16739,13 +16738,13 @@ static void app_mqtt_thread(void *param)
         MG_MQTT_Destroy(pApp->mqtt.client);
         pApp->mqtt.client = ((void *)0);
     }
-    MG_TRACE_Printf((u32)((u32)('U') | ((u32)('S') << 7) | ((u32)('E') << 14) | ((u32)('R') << 21)), "[%d]MQTT exit thread", 813);
+    MG_TRACE_Printf((u32)((u32)('U') | ((u32)('S') << 7) | ((u32)('E') << 14) | ((u32)('R') << 21)), "[%d]MQTT exit thread", 815);
     app_util_threadSleep(1000, pApp->bLowPowerModeEn);
     MG_OS_ThreadExit();
 }
 void app_mqtt_task(void)
 {
-    MG_TRACE_Printf((u32)((u32)('U') | ((u32)('S') << 7) | ((u32)('E') << 14) | ((u32)('R') << 21)), "[%d]MQTT start thread", 820);
+    MG_TRACE_Printf((u32)((u32)('U') | ((u32)('S') << 7) | ((u32)('E') << 14) | ((u32)('R') << 21)), "[%d]MQTT start thread", 822);
     app_gps_init();
     MG_OS_ThreadCreate("appMqtt", app_mqtt_thread, ((void *)0), Thread_PRIORITY_NORMAL, 1024*20, 50);
 }

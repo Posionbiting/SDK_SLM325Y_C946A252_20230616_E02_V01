@@ -6,7 +6,7 @@
 #define _GLOBAL__ extern
 #endif
 
-#define APP_VER         "0.0.4"
+#define APP_VER         "0.0.6"
 typedef enum
 {
     APP_MQTT_DISCONNECTED = 0,
@@ -76,8 +76,8 @@ typedef struct
     u8      sn[20];
     u32     nReportCycle;
     app_sys_state    sysState;
-    u8      key[20];  //username
-    u8      secret[20];  //password
+    u8      key[21];  //username
+    u8      secret[21];  //password
     u8      version[20]; 
     u8      type[20]; 
     u8    isSysUpdate;  //fota

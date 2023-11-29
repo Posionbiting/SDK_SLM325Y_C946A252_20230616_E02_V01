@@ -107,7 +107,7 @@ CmsRetId openAT_UKEY(const AtCmdInputContext *pAtCmdReq)
         break;
 
     case AT_SET_REQ:
-        mLen = mg_openAT_cmdParamStr(pAtCmdReq->pParamList, 0, (u8 *)mBuff, 20, &paramok);
+        mLen = mg_openAT_cmdParamStr(pAtCmdReq->pParamList, 0, (u8 *)mBuff, 21, &paramok);
         if(!paramok || mLen <= 0)
         {
             rc = mg_openAT_cmdRespError(atHandle, OPEN_AT_ERROR_PARAM);
@@ -150,7 +150,7 @@ CmsRetId openAT_USECRET(const AtCmdInputContext *pAtCmdReq)
         break;
 
     case AT_SET_REQ:
-        mLen = mg_openAT_cmdParamStr(pAtCmdReq->pParamList, 0, (u8 *)mBuff, 20, &paramok);
+        mLen = mg_openAT_cmdParamStr(pAtCmdReq->pParamList, 0, (u8 *)mBuff, 21, &paramok);
         if(!paramok || mLen <= 0)
         {
             rc = mg_openAT_cmdRespError(atHandle, OPEN_AT_ERROR_PARAM);

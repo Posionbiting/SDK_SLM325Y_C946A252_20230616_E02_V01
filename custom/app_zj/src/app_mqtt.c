@@ -15,9 +15,9 @@
 #define APP_PUB_TOPIC_DEV_SN    "tank/gpsMsg/"
 #define APP_PUB_TOPIC_ALARM     "tank/gpsMsg/"
 #define APP_SUB_DOWN_PARAM      "device/ota/"
-#define HW_VERSION              "TTC411.0.0.1"
+#define HW_VERSION              "TTC413.0.0.1"
 
-#define DEVICE_TYPE        "TTC411"
+#define DEVICE_TYPE        "TTC413"
 #define TOPIC_MAX_LEN      64
 #define CHAR_MAX_LEN       20
 
@@ -143,7 +143,7 @@ static int app_mqtt_pub_uploadDevSN(app_cfg_t *ctx)
     app_util_jsonDataPack(false, &m_sendLen, ATTR_STRING, "gpsValid", (unsigned char *)"true");
     m_iBuff = ctx->nvConfig.sysState;
     app_util_jsonDataPack(false, &m_sendLen, ATTR_INT, "tamper", (unsigned char *)&m_iBuff);
-    app_util_jsonDataPack(false, &m_sendLen, ATTR_STRING, "modle", (unsigned char *)&ctx->gnssData.mode);
+    // app_util_jsonDataPack(false, &m_sendLen, ATTR_STRING, "modle", (unsigned char *)&ctx->gnssData.mode);
     m_sendLen += sprintf(g_app_tmpBuff+m_sendLen, "%s}", mEnd);
 
     {
@@ -617,10 +617,12 @@ int app_mqtt_connect(app_cfg_t *ctx)
 {
     int iRet = MG_RET_OK;
     u8 cid = ctx->netInfo.cid;
-    char name[20];
-    char password[20];
-    strcpy(name, (char *)ctx->nvConfig.key);
-    strcpy(password, (char *)ctx->nvConfig.secret);
+    char name[40] = {0};
+    char password[40] = {0};
+    sprintf(name, "%s", ctx->nvConfig.key);
+    sprintf(password, "%s", ctx->nvConfig.secret);
+    // strcpy(name, (char *)ctx->nvConfig.key);
+    // strcpy(password, (char *)ctx->nvConfig.secret);
     APP_DEBUG("[%d]MQTT connect", __LINE__);
     APP_DEBUG("name:%s", name);
     APP_DEBUG("password:%s", password);

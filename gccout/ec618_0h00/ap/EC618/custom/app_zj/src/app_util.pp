@@ -2926,7 +2926,7 @@ s32 MG_MQTT_Unsubscribe(ST_MqttClient* client, const char *topic, s32 timeout);
 s32 MG_MQTT_Publish(ST_MqttClient* client, const char *topic, const u8 *msg, u32 msgLen, u8 dup, u8 qos, u8 retain, s32 timeout);
 _Bool MG_MQTT_ClientIsConnected(ST_MqttClient* client);
 #define _GLOBAL__ extern
-#define APP_VER "0.0.4"
+#define APP_VER "0.0.6"
 typedef enum
 {
     APP_MQTT_DISCONNECTED = 0,
@@ -2982,8 +2982,8 @@ typedef struct
     u8 sn[20];
     u32 nReportCycle;
     app_sys_state sysState;
-    u8 key[20];
-    u8 secret[20];
+    u8 key[21];
+    u8 secret[21];
     u8 version[20];
     u8 type[20];
     u8 isSysUpdate;

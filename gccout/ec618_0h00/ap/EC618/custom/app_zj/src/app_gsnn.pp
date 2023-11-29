@@ -2926,7 +2926,7 @@ s32 MG_MQTT_Unsubscribe(ST_MqttClient* client, const char *topic, s32 timeout);
 s32 MG_MQTT_Publish(ST_MqttClient* client, const char *topic, const u8 *msg, u32 msgLen, u8 dup, u8 qos, u8 retain, s32 timeout);
 _Bool MG_MQTT_ClientIsConnected(ST_MqttClient* client);
 #define _GLOBAL__ extern
-#define APP_VER "0.0.4"
+#define APP_VER "0.0.6"
 typedef enum
 {
     APP_MQTT_DISCONNECTED = 0,
@@ -2982,8 +2982,8 @@ typedef struct
     u8 sn[20];
     u32 nReportCycle;
     app_sys_state sysState;
-    u8 key[20];
-    u8 secret[20];
+    u8 key[21];
+    u8 secret[21];
     u8 version[20];
     u8 type[20];
     u8 isSysUpdate;
@@ -3403,7 +3403,7 @@ s32 MG_GPIO_SetCallback(Enum_PinNum pinNum, mg_gpioCallback cb, void *ctx);
 void MG_GPIO_EnableInterrupt(void);
 void MG_GPIO_DisableInterrupt(void);
 #define __MG_GNSS_H 
-#define GNSS_CFG_DBG_EN FALSE
+#define GNSS_CFG_DBG_EN TRUE
 #define NMEA_SIG_BAD (0)
 #define NMEA_SIG_LOW (1)
 #define NMEA_SIG_MID (2)
@@ -3817,6 +3817,7 @@ static char* app_gps_speed2str(double val)
 static int app_gps_getGnssData(int iTimeout, app_cfg_t *pApp)
 {
     int iRet = MG_RET_ERR;
+    int i = iTimeout/(1000);
     MG_TRACE_Printf((u32)((u32)('U') | ((u32)('S') << 7) | ((u32)('E') << 14) | ((u32)('R') << 21)), "[%d]GPS get gnss data.", 169);
     iRet = app_gps_openGpsANT();
     if (!MG_GNSS_Open()){
@@ -3826,46 +3827,55 @@ static int app_gps_getGnssData(int iTimeout, app_cfg_t *pApp)
     }
     app_util_threadSleep(1000, pApp->bLowPowerModeEn);
     MG_GNSS_DebugConfig(GNSS_DBG_NONE);
-    while (1)
+    do
     {
-        if (MG_GNSS_GetStatus() == 1){
-            MG_TRACE_Printf((u32)((u32)('U') | ((u32)('S') << 7) | ((u32)('E') << 14) | ((u32)('R') << 21)), "[%d]GPS get gnss data.", 184);
+        iRet = MG_RET_ERR;
+        if (pApp->netState != NET_ACTED)
+            break;
+        if (MG_GNSS_GetStatus() != 1)
+        {
+            MG_TRACE_Printf((u32)((u32)('U') | ((u32)('S') << 7) | ((u32)('E') << 14) | ((u32)('R') << 21)), "[%d]GNSS system is closed.", 190);
+        }
+        else
+        {
+            MG_TRACE_Printf((u32)((u32)('U') | ((u32)('S') << 7) | ((u32)('E') << 14) | ((u32)('R') << 21)), "[%d]GPS get gnss data.", 200);
             memset(&nmeaINFO, 0, sizeof(nmeaINFO));
             memset(g_app_tmpBuff, 0, sizeof(g_app_tmpBuff));
             MG_GNSS_GetNmeaInfo((u8 *)g_app_tmpBuff, sizeof(g_app_tmpBuff));
-            if (MG_GNSS_NmeaParse((u8 *)g_app_tmpBuff, &nmeaINFO) == 1){
-                ST_Time m_time;
-                MG_TRACE_Printf((u32)((u32)('U') | ((u32)('S') << 7) | ((u32)('E') << 14) | ((u32)('R') << 21)), "[%d]GPS FIX STATUS:%d.", 192, nmeaINFO.sig);
-                MG_TRACE_Printf((u32)((u32)('U') | ((u32)('S') << 7) | ((u32)('E') << 14) | ((u32)('R') << 21)), "[%d]GPS get gnss data, lat:%d, lon:%d", 193, (int)(nmeaINFO.lat*100000), (int)(nmeaINFO.lon*100000));
-                MG_TRACE_Printf((u32)((u32)('U') | ((u32)('S') << 7) | ((u32)('E') << 14) | ((u32)('R') << 21)), "[%d]GPS get gnss data, lat:%s, lon:%s", 194, dmTod(nmeaINFO.lat), dmTod(nmeaINFO.lon));
-                sprintf(pApp->gnssData.lat,"%s", dmTod(nmeaINFO.lat));
-                sprintf(pApp->gnssData.lon,"%s", dmTod(nmeaINFO.lon));
-                MG_TRACE_Printf((u32)((u32)('U') | ((u32)('S') << 7) | ((u32)('E') << 14) | ((u32)('R') << 21)), "[%d]GPS get gnss data, altitude:%d", 197, (int)(nmeaINFO.elv * 10000));
-                sprintf(pApp->gnssData.elv,"%s", app_gps_evl2str(nmeaINFO.elv));
-                pApp->gnssData.view = nmeaINFO.satinfo.inview;
-                MG_TRACE_Printf((u32)((u32)('U') | ((u32)('S') << 7) | ((u32)('E') << 14) | ((u32)('R') << 21)), "[%d]GPS get gnss data, speed:%d", 200, (int)(nmeaINFO.speed * 1000000));
-                sprintf(pApp->gnssData.speed,"%s", app_gps_speed2str(nmeaINFO.speed));
-                sprintf(pApp->gnssData.mode,"%s", "GPS");
-                memset(&m_time, 0, sizeof(m_time));
-                MG_TIME_GetLocalTime(&m_time);
-                memset((char *)pApp->gnssData.utc, 0, sizeof(pApp->gnssData.utc));
-                sprintf((char *)pApp->gnssData.utc, "%04d-%02d-%02d %02d:%02d:%02d",
-                    m_time.year, m_time.month, m_time.day,
-                    m_time.hour, m_time.minute, m_time.second);
-                if (nmeaINFO.sig){
+            if (MG_GNSS_NmeaParse((u8 *)g_app_tmpBuff, &nmeaINFO) == 1)
+            {
+                if (nmeaINFO.sig)
+                {
+                    ST_Time m_time;
+                    MG_TRACE_Printf((u32)((u32)('U') | ((u32)('S') << 7) | ((u32)('E') << 14) | ((u32)('R') << 21)), "[%d]GPS FIX STATUS:%d.", 215, nmeaINFO.sig);
+                    MG_TRACE_Printf((u32)((u32)('U') | ((u32)('S') << 7) | ((u32)('E') << 14) | ((u32)('R') << 21)), "[%d]GPS get gnss data, lat:%d, lon:%d", 216, (int)(nmeaINFO.lat*100000), (int)(nmeaINFO.lon*100000));
+                    MG_TRACE_Printf((u32)((u32)('U') | ((u32)('S') << 7) | ((u32)('E') << 14) | ((u32)('R') << 21)), "[%d]GPS get gnss data, lat:%s, lon:%s", 217, dmTod(nmeaINFO.lat), dmTod(nmeaINFO.lon));
+                    sprintf(pApp->gnssData.lat,"%s", dmTod(nmeaINFO.lat));
+                    sprintf(pApp->gnssData.lon,"%s", dmTod(nmeaINFO.lon));
+                    MG_TRACE_Printf((u32)((u32)('U') | ((u32)('S') << 7) | ((u32)('E') << 14) | ((u32)('R') << 21)), "[%d]GPS get gnss data, altitude:%d", 220, (int)(nmeaINFO.elv * 10000));
+                    sprintf(pApp->gnssData.elv,"%s", app_gps_evl2str(nmeaINFO.elv));
+                    pApp->gnssData.view = nmeaINFO.satinfo.inview;
+                    MG_TRACE_Printf((u32)((u32)('U') | ((u32)('S') << 7) | ((u32)('E') << 14) | ((u32)('R') << 21)), "[%d]GPS get gnss data, speed:%d", 223, (int)(nmeaINFO.speed * 1000000));
+                    sprintf(pApp->gnssData.speed,"%s", app_gps_speed2str(nmeaINFO.speed));
+                    sprintf(pApp->gnssData.mode,"%s", "GPS");
+                    memset(&m_time, 0, sizeof(m_time));
+                    MG_TIME_GetLocalTime(&m_time);
+                    memset((char *)pApp->gnssData.utc, 0, sizeof(pApp->gnssData.utc));
+                    sprintf((char *)pApp->gnssData.utc, "%04d-%02d-%02d %02d:%02d:%02d",
+                        m_time.year, m_time.month, m_time.day,
+                        m_time.hour, m_time.minute, m_time.second);
                     iRet = MG_RET_OK;
-                    goto EXIT;
+                    break;
                 }
             }
         }
         app_util_threadSleep(1000, pApp->bLowPowerModeEn);
-    }
-EXIT:
+    }while(--i > 0);
     if (MG_GNSS_GetStatus() == 1){
         if (!MG_GNSS_Close()){
-            MG_TRACE_Printf((u32)((u32)('U') | ((u32)('S') << 7) | ((u32)('E') << 14) | ((u32)('R') << 21)), "[%d]Filed to cloess the GNSS system.", 286);
+            MG_TRACE_Printf((u32)((u32)('U') | ((u32)('S') << 7) | ((u32)('E') << 14) | ((u32)('R') << 21)), "[%d]Filed to cloess the GNSS system.", 246);
         } else {
-            MG_TRACE_Printf((u32)((u32)('U') | ((u32)('S') << 7) | ((u32)('E') << 14) | ((u32)('R') << 21)), "[%d]Successfully cloessed the GNSS system.", 288);
+            MG_TRACE_Printf((u32)((u32)('U') | ((u32)('S') << 7) | ((u32)('E') << 14) | ((u32)('R') << 21)), "[%d]Successfully cloessed the GNSS system.", 248);
         }
     }
     app_gps_closeGpsANT();
@@ -3996,11 +4006,11 @@ static int _app_lbs_httpGet(app_cfg_t *pApp, const char *url, u32 timeout_s)
             ST_Time m_time;
             char evl_null[] = "0.0";
             char speed_null[] = "0.0";
-            MG_TRACE_Printf((u32)((u32)('U') | ((u32)('S') << 7) | ((u32)('E') << 14) | ((u32)('R') << 21)), "[%d]LBS get gnss data, latitude:%s, longtitude:%s", 448, latitude, longtitude);
+            MG_TRACE_Printf((u32)((u32)('U') | ((u32)('S') << 7) | ((u32)('E') << 14) | ((u32)('R') << 21)), "[%d]LBS get gnss data, latitude:%s, longtitude:%s", 408, latitude, longtitude);
             memset(&pApp->gnssData, 0, sizeof(pApp->gnssData));
             sprintf((char *)pApp->gnssData.lat, "%s",latitude);
             sprintf((char *)pApp->gnssData.lon, "%s",longtitude);
-            MG_TRACE_Printf((u32)((u32)('U') | ((u32)('S') << 7) | ((u32)('E') << 14) | ((u32)('R') << 21)), "[%d]LBS modify to string, lat:%s, lon:%s", 457, pApp->gnssData.lat,pApp->gnssData.lon);
+            MG_TRACE_Printf((u32)((u32)('U') | ((u32)('S') << 7) | ((u32)('E') << 14) | ((u32)('R') << 21)), "[%d]LBS modify to string, lat:%s, lon:%s", 413, pApp->gnssData.lat,pApp->gnssData.lon);
             sprintf(pApp->gnssData.elv,"%s", evl_null);
             pApp->gnssData.view = 0;
             sprintf(pApp->gnssData.speed,"%s", speed_null);
@@ -4046,7 +4056,7 @@ int app_gps_getLBSData(int iTimeout, app_cfg_t *pApp)
                  ueExtStatusInfo.rrcStatus_cellId,
                  ueExtStatusInfo.phyStatus_sRsrp / 100,
                  "f61857c3cf1c7e892776a58383799c9f");
-        MG_TRACE_Printf((u32)((u32)('U') | ((u32)('S') << 7) | ((u32)('E') << 14) | ((u32)('R') << 21)), "[%d]LBS URL: %s", 519, url);
+        MG_TRACE_Printf((u32)((u32)('U') | ((u32)('S') << 7) | ((u32)('E') << 14) | ((u32)('R') << 21)), "[%d]LBS URL: %s", 470, url);
         _app_lbs_httpGet(pApp, url, 30);
     }
     return iRet;
@@ -4054,15 +4064,11 @@ int app_gps_getLBSData(int iTimeout, app_cfg_t *pApp)
 int app_gps_getData(app_cfg_t *pApp)
 {
     int iRet = MG_RET_OK;
-    iRet = app_gps_getGnssData(45*1000, pApp);
-    if (iRet != MG_RET_OK)
-    {
-        iRet = app_gps_getLBSData(60*1000, pApp);
-    }
+    iRet = app_gps_getLBSData(60*1000, pApp);
     return iRet;
 }
 void app_gps_init(void)
 {
     _Bool bRet = MG_GPIO_Init(PIN40, MG_GPIO_DIR_OUT, MG_GPIO_LEVEL_LOW, MG_GPIO_PULL_UP);
-    MG_TRACE_Printf((u32)((u32)('U') | ((u32)('S') << 7) | ((u32)('E') << 14) | ((u32)('R') << 21)), "[%d]GPS init gps ant, %d", 545, bRet);
+    MG_TRACE_Printf((u32)((u32)('U') | ((u32)('S') << 7) | ((u32)('E') << 14) | ((u32)('R') << 21)), "[%d]GPS init gps ant, %d", 497, bRet);
 }

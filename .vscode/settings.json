@@ -27,6 +27,8 @@
         "atc_decoder.h": "c",
         "at_util.h": "c",
         "mg_openat_param.h": "c",
-        "stdlib.h": "c"
+        "stdlib.h": "c",
+        "typeindex": "c",
+        "typeinfo": "c"
     }
 }

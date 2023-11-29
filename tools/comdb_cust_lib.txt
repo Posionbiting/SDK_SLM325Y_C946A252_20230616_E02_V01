@@ -1,8 +1,8 @@
 DbVersion
-2011704466,100
+1840250906,100
 <end>
 BuildInfo
-The current data file was built by the Application Ver. 2.1.60.136, Sat Nov 25 17:47:11 2023
+The current data file was built by the Application Ver. 2.1.60.136, Tue Nov 28 15:54:19 2023
 <end>
 EnumVals
 0,2048,0,0,PHY_ONLINE,PHY_ICS_MODULE,PhyIcsMeasMainEntrance_1,P_ERROR,swLogPrintf("Incorrect ICS stage ( %d ) for new euArfcn arranged for ICS MEAS ");
@@ -11538,5 +11538,5 @@ cmsSigId,SIG_CUSTOMER_IND,2436
 cmsSigId,CUSTOMER_SIGNAL_END,2559
 <end>
 OptionalSegment
-optional_sk_01,A00A805007811F8A7DA1A148340D4E38523B50A60EC0ADB1BE7A129DE3B71464
+optional_sk_01,967957B07A44270FC70893855B465B26D3BF3215A1A3F3CC198782CDB551D28D
 <end>

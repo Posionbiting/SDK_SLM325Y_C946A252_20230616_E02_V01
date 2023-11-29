@@ -165,7 +165,7 @@ static char* app_gps_speed2str(double val)
 static int app_gps_getGnssData(int iTimeout, app_cfg_t *pApp)
 {
     int iRet = MG_RET_ERR;
-    // int i = iTimeout/(1000);
+    int i = iTimeout/(1000);
     APP_DEBUG("[%d]GPS get gnss data.", __LINE__);
 
     //开GPS天线
@@ -178,48 +178,8 @@ static int app_gps_getGnssData(int iTimeout, app_cfg_t *pApp)
     }
     app_util_threadSleep(1000, pApp->bLowPowerModeEn);
     MG_GNSS_DebugConfig(GNSS_DBG_NONE);
-    while (1)
-    {
-        if (MG_GNSS_GetStatus() == TRUE){
-            APP_DEBUG("[%d]GPS get gnss data.", __LINE__);
-            memset(&nmeaINFO, 0, sizeof(nmeaINFO));
-            memset(g_app_tmpBuff, 0, sizeof(g_app_tmpBuff));
-
-            MG_GNSS_GetNmeaInfo((u8 *)g_app_tmpBuff, sizeof(g_app_tmpBuff));
-            if (MG_GNSS_NmeaParse((u8 *)g_app_tmpBuff, &nmeaINFO) == true){
-
-                ST_Time m_time;
-                APP_DEBUG("[%d]GPS FIX STATUS:%d.", __LINE__, nmeaINFO.sig);
-                APP_DEBUG("[%d]GPS get gnss data, lat:%d, lon:%d", __LINE__, (int)(nmeaINFO.lat*100000), (int)(nmeaINFO.lon*100000));
-                APP_DEBUG("[%d]GPS get gnss data, lat:%s, lon:%s", __LINE__, dmTod(nmeaINFO.lat), dmTod(nmeaINFO.lon));
-                sprintf(pApp->gnssData.lat,"%s", dmTod(nmeaINFO.lat));
-                sprintf(pApp->gnssData.lon,"%s", dmTod(nmeaINFO.lon));
-                APP_DEBUG("[%d]GPS get gnss data, altitude:%d", __LINE__, (int)(nmeaINFO.elv * 10000));
-                sprintf(pApp->gnssData.elv,"%s", app_gps_evl2str(nmeaINFO.elv));
-                pApp->gnssData.view = nmeaINFO.satinfo.inview;
-                APP_DEBUG("[%d]GPS get gnss data, speed:%d", __LINE__, (int)(nmeaINFO.speed * 1000000));
-                sprintf(pApp->gnssData.speed,"%s", app_gps_speed2str(nmeaINFO.speed));
-                sprintf(pApp->gnssData.mode,"%s", "GPS");
-
-                //UTC: "2023-01-05 03:22:22"
-                memset(&m_time, 0, sizeof(m_time));
-                MG_TIME_GetLocalTime(&m_time);
-                memset((char *)pApp->gnssData.utc, 0, sizeof(pApp->gnssData.utc));
-                sprintf((char *)pApp->gnssData.utc, "%04d-%02d-%02d %02d:%02d:%02d",
-                    m_time.year, m_time.month, m_time.day,
-                    m_time.hour, m_time.minute, m_time.second);
-                    
-                if (nmeaINFO.sig){
-                    iRet = MG_RET_OK;
-                    goto EXIT;
-                }
-                   
-            }
-        }
-        app_util_threadSleep(1000, pApp->bLowPowerModeEn);
-    }
-    
-    /* do
+ 
+    do
     {
         iRet = MG_RET_ERR;
         if (pApp->netState != NET_ACTED)
@@ -279,8 +239,8 @@ static int app_gps_getGnssData(int iTimeout, app_cfg_t *pApp)
             }
         }
         app_util_threadSleep(1000, pApp->bLowPowerModeEn);
-    }while(--i > 0); */
-EXIT:
+    }while(--i > 0);
+// EXIT:
     if (MG_GNSS_GetStatus() == true){
         if (!MG_GNSS_Close()){
             APP_DEBUG("[%d]Filed to cloess the GNSS system.", __LINE__);
@@ -448,18 +408,12 @@ static int _app_lbs_httpGet(app_cfg_t *pApp, const char *url, u32 timeout_s)
             APP_DEBUG("[%d]LBS get gnss data, latitude:%s, longtitude:%s", __LINE__, latitude, longtitude);
             memset(&pApp->gnssData, 0, sizeof(pApp->gnssData));
 
-            // pApp->gnssData.lat = _app_lbs_degree2ndeg(strtod(latitude, &ptr));
-            // pApp->gnssData.lon = _app_lbs_degree2ndeg(strtod(longtitude, &ptr));
             sprintf((char *)pApp->gnssData.lat, "%s",latitude);
             sprintf((char *)pApp->gnssData.lon, "%s",longtitude);
-            // pApp->gnssData.lat = latitude;
-            // pApp->gnssData.lon = longtitude;
             APP_DEBUG("[%d]LBS modify to string, lat:%s, lon:%s", __LINE__, pApp->gnssData.lat,pApp->gnssData.lon);
             sprintf(pApp->gnssData.elv,"%s", evl_null);
-            // pApp->gnssData.elv = 0;
             pApp->gnssData.view = 0;
             sprintf(pApp->gnssData.speed,"%s", speed_null);
-            // pApp->gnssData.speed = 0;
             sprintf(pApp->gnssData.mode,"%s", "LBS");
             //UTC: "2023-01-05 03:22:22"
             memset(&m_time, 0, sizeof(m_time));
@@ -468,9 +422,6 @@ static int _app_lbs_httpGet(app_cfg_t *pApp, const char *url, u32 timeout_s)
 
             if ((m_time.timezone) >= 0)
             {
-                // sprintf((char *)pApp->gnssData.utc, "%04d-%02d-%02d %02d:%02d:%02d+%02d",
-                //     m_time.year, m_time.month, m_time.day,
-                //     m_time.hour, m_time.minute, m_time.second, m_time.timezone);
                 sprintf((char *)pApp->gnssData.utc, "%04d-%02d-%02d %02d:%02d:%02d",
                     m_time.year, m_time.month, m_time.day,
                     m_time.hour, m_time.minute, m_time.second);
@@ -527,14 +478,15 @@ int app_gps_getData(app_cfg_t *pApp)
 {
     int iRet = MG_RET_OK;
 
-    //获取GPS定位数据
-    iRet = app_gps_getGnssData(45*1000, pApp);
+    // //获取GPS定位数据
+    // iRet = app_gps_getGnssData(45*1000, pApp);
 
-    //如果获取不到定位数据,获取LBS
-    if (iRet != MG_RET_OK)
-    {
-        iRet = app_gps_getLBSData(60*1000, pApp);
-    }
+    // //如果获取不到定位数据,获取LBS
+    // if (iRet != MG_RET_OK)
+    // {
+    //     iRet = app_gps_getLBSData(60*1000, pApp);
+    // }
+    iRet = app_gps_getLBSData(60*1000, pApp);
 
     return iRet;
 }

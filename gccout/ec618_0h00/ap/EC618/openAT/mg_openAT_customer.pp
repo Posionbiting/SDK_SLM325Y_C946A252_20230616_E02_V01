@@ -11405,7 +11405,7 @@ s32 MG_MQTT_Unsubscribe(ST_MqttClient* client, const char *topic, s32 timeout);
 s32 MG_MQTT_Publish(ST_MqttClient* client, const char *topic, const u8 *msg, u32 msgLen, u8 dup, u8 qos, u8 retain, s32 timeout);
 _Bool MG_MQTT_ClientIsConnected(ST_MqttClient* client);
 #define _GLOBAL__ extern
-#define APP_VER "0.0.4"
+#define APP_VER "0.0.6"
 typedef enum
 {
     APP_MQTT_DISCONNECTED = 0,
@@ -11461,8 +11461,8 @@ typedef struct
     u8 sn[20];
     u32 nReportCycle;
     app_sys_state sysState;
-    u8 key[20];
-    u8 secret[20];
+    u8 key[21];
+    u8 secret[21];
     u8 version[20];
     u8 type[20];
     u8 isSysUpdate;
@@ -11553,7 +11553,7 @@ CmsRetId openAT_USGSW(const AtCmdInputContext *pAtCmdReq)
     case AT_EXEC_REQ:
         iLen = 0;
         memset(mBuff, 0, sizeof(mBuff));
-        iLen += sprintf(mBuff+iLen, "APP Version: %s\r\n", "0.0.4");
+        iLen += sprintf(mBuff+iLen, "APP Version: %s\r\n", "0.0.6");
         memset(mVer, 0, sizeof(mVer));
         MG_SYSTEM_GetModuleInfo(mVer, sizeof(mVer));
         iLen += sprintf(mBuff+iLen, "SDK Version: %s", mVer);
@@ -11622,7 +11622,7 @@ CmsRetId openAT_UKEY(const AtCmdInputContext *pAtCmdReq)
         rc = mg_openAT_cmdRespTextAndOK(atHandle, mBuff);
         break;
     case AT_SET_REQ:
-        mLen = mg_openAT_cmdParamStr(pAtCmdReq->pParamList, 0, (u8 *)mBuff, 20, &paramok);
+        mLen = mg_openAT_cmdParamStr(pAtCmdReq->pParamList, 0, (u8 *)mBuff, 21, &paramok);
         if(!paramok || mLen <= 0)
         {
             rc = mg_openAT_cmdRespError(atHandle, 702);
@@ -11658,7 +11658,7 @@ CmsRetId openAT_USECRET(const AtCmdInputContext *pAtCmdReq)
         rc = mg_openAT_cmdRespTextAndOK(atHandle, mBuff);
         break;
     case AT_SET_REQ:
-        mLen = mg_openAT_cmdParamStr(pAtCmdReq->pParamList, 0, (u8 *)mBuff, 20, &paramok);
+        mLen = mg_openAT_cmdParamStr(pAtCmdReq->pParamList, 0, (u8 *)mBuff, 21, &paramok);
         if(!paramok || mLen <= 0)
         {
             rc = mg_openAT_cmdRespError(atHandle, 702);
